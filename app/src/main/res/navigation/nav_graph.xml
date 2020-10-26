@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/categoryRecipes"
+    >
+
+    <fragment
+        android:id="@+id/categoryRecipes"
+        android:name="com.andreromano.foodmix.ui.category_recipes.CategoryRecipesFragment"
+        android:label="Category Recipes"
+        tools:layout="@layout/category_recipes_fragment"
+        >
+
+        <argument
+            android:name="category"
+            app:argType="com.andreromano.foodmix.domain.model.Category"
+            app:nullable="false"
+            />
+
+    </fragment>
+
+</navigation>
