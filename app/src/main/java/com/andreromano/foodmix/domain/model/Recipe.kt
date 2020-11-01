@@ -2,6 +2,7 @@ package com.andreromano.foodmix.domain.model
 
 import android.os.Parcelable
 import androidx.annotation.FloatRange
+import com.andreromano.foodmix.core.Ingredient
 import com.andreromano.foodmix.core.Minutes
 import com.andreromano.foodmix.core.RecipeId
 import kotlinx.android.parcel.Parcelize
@@ -20,7 +21,7 @@ data class Recipe(
     val servings: Int,
     val duration: Minutes,
     val categories: List<Category>,
-    val ingredients: List<String>,
+    val ingredients: List<Ingredient>,
     val directions: List<Direction>,
     val reviews: List<Review>
 ) : Parcelable

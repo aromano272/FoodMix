@@ -1,6 +1,10 @@
 package com.andreromano.foodmix.network
 
+import com.andreromano.foodmix.core.Ingredient
+import com.andreromano.foodmix.data.mapper.toDomain
 import com.andreromano.foodmix.domain.model.*
+import com.andreromano.foodmix.network.model.CategoryResult
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -19,13 +23,13 @@ object FakeData {
 
     val imageUrl = "https://picsum.photos/200/300"
 
-    private fun newCategory(): Category = id.let { Category(it, "category $it", imageUrl) }
+    private fun newCategory(): CategoryResult = id.let { CategoryResult(it, "category $it", imageUrl) }
 
-    val categories: List<Category> = (0..7).map {
+    val categories: List<CategoryResult> = (0..7).map {
         newCategory()
     }
 
-    private fun generateRandomCategories(): List<Category> {
+    private fun generateRandomCategories(): List<CategoryResult> {
         val randomNumber1 = (rng.nextDouble() * categories.size).toInt()
         val randomNumber2 = (rng.nextDouble() * categories.size).toInt()
         val randomNumber3 = (rng.nextDouble() * categories.size).toInt()
@@ -45,11 +49,11 @@ object FakeData {
         return directions.filterIndexed { index, _ -> index == randomNumber1 || index == randomNumber2 || index == randomNumber3 }
     }
 
-    val ingredients: List<String> = (0..10).map {
+    val ingredients: List<Ingredient> = (0..10).map {
         "ingredients $id"
     }
 
-    private fun generateRandomIngredients(): List<String> {
+    private fun generateRandomIngredients(): List<Ingredient> {
         val randomNumber1 = (rng.nextDouble() * ingredients.size).toInt()
         val randomNumber2 = (rng.nextDouble() * ingredients.size).toInt()
         val randomNumber3 = (rng.nextDouble() * ingredients.size).toInt()
@@ -93,7 +97,7 @@ object FakeData {
             (rng.nextDouble() * 1000).roundToInt(),
             (rng.nextDouble() * 6).roundToInt(),
             (rng.nextDouble() * 100).roundToInt(),
-            generateRandomCategories(),
+            runBlocking { generateRandomCategories().toDomain() }, // todo: remove run blocking or make this whole thing suspend
             generateRandomIngredients(),
             generateRandomDirections(),
             generateRandomReviews()

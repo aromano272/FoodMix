@@ -4,8 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/categoryRecipes"
+    app:startDestination="@id/categories"
     >
+
+    <fragment
+        android:id="@+id/categories"
+        android:name="com.andreromano.foodmix.ui.categories.CategoriesFragment"
+        android:label="Categories"
+        tools:layout="@layout/categories_fragment"
+        >
+
+        <action
+            android:id="@+id/action_categories_to_categoryRecipes"
+            app:destination="@+id/categoryRecipes"
+            />
+
+    </fragment>
 
     <fragment
         android:id="@+id/categoryRecipes"
@@ -17,6 +31,26 @@
         <argument
             android:name="category"
             app:argType="com.andreromano.foodmix.domain.model.Category"
+            app:nullable="false"
+            />
+
+        <action
+            android:id="@+id/action_categoryRecipes_to_recipeDetails"
+            app:destination="@+id/recipeDetails"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipeDetails"
+        android:name="com.andreromano.foodmix.ui.recipe_details.RecipeDetailsFragment"
+        android:label="Recipe Details"
+        tools:layout="@layout/recipe_details_fragment"
+        >
+
+        <argument
+            android:name="recipe"
+            app:argType="com.andreromano.foodmix.domain.model.Recipe"
             app:nullable="false"
             />
 

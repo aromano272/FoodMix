@@ -18,15 +18,12 @@ class ServiceGenerator(
         const val ACCEPT_LANGUAGE = "Accept-Language"
     }
 
-    private val twisperApiRetrofitBuilder by lazy {
+    private val retrofitBuilder by lazy {
         Retrofit.Builder()
             .baseUrl("https://run.mocky.io/v3/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-//            .addCallAdapterFactory(LiveDataCallAdapterFactory())
-//            .addCallAdapterFactory(TwisperRxResponseHandlingCallAdapterFactory.create())
-//            .addCallAdapterFactory(TwisperApiLiveDataCallAdapterFactory(null))
-//            .addCallAdapterFactory(TwisperApiLiveDataCallAdapterFactory(chuckerCollector))
+            .addCallAdapterFactory(ResultKtCallAdapterFactory())
     }
 
     private fun createHttpClient() = OkHttpClient.Builder()
@@ -44,7 +41,7 @@ class ServiceGenerator(
             }
         )
 
-        val retrofit = twisperApiRetrofitBuilder
+        val retrofit = retrofitBuilder
             .client(httpBuilder.build())
             .build()
 

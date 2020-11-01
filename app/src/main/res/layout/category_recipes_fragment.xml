@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     >
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_categories"
+    <com.airbnb.epoxy.EpoxyRecyclerView
+        android:id="@+id/rv_recipes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"

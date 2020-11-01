@@ -1,20 +1,21 @@
 package com.andreromano.foodmix
 
 import android.content.Context
-import com.andreromano.foodmix.data.RecipeRepository
+import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.network.Api
 import com.andreromano.foodmix.network.FakeApi
+import com.andreromano.foodmix.network.FromBaseResponseToResultKtAdapterFactory
 import com.andreromano.foodmix.network.ServiceGenerator
 import com.squareup.moshi.Moshi
 
 object Injection {
 
-    private var recipeRepository: RecipeRepository? = null
-    fun provideRecipeRepository(context: Context) = recipeRepository ?: RecipeRepository(
+    private var repository: Repository? = null
+    fun provideRepository(context: Context) = repository ?: Repository(
 //        provideApi()
         FakeApi()
     ).also {
-        recipeRepository = it
+        repository = it
     }
 
     private var api: Api? = null
@@ -23,7 +24,9 @@ object Injection {
     }
 
     private var moshi: Moshi? = null
-    fun provideMoshi(): Moshi = moshi ?: Moshi.Builder().build().also {
+    fun provideMoshi(): Moshi = moshi ?: Moshi.Builder()
+        .add(FromBaseResponseToResultKtAdapterFactory())
+        .build().also {
         moshi = it
     }
 }
