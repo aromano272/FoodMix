@@ -11,8 +11,10 @@ import com.andreromano.foodmix.core.Ingredient
 import com.andreromano.foodmix.ui.epoxy_models.KotlinEpoxyHolder
 
 
-@EpoxyModelClass(layout = R.layout.item_recipe_ingredient)
+@EpoxyModelClass
 abstract class RecipeIngredientModel : EpoxyModelWithHolder<RecipeIngredientModel.Holder>() {
+
+    override fun getDefaultLayout(): Int = R.layout.item_recipe_ingredient
 
     @EpoxyAttribute
     lateinit var ingredient: Ingredient

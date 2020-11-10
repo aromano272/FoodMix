@@ -12,9 +12,12 @@ import com.andreromano.foodmix.Injection
 import com.andreromano.foodmix.R
 import com.andreromano.foodmix.core.EventObserver
 import com.andreromano.foodmix.extensions.addOnTabSelectedListener
+import com.andreromano.foodmix.extensions.setTextChangedListener
+import com.andreromano.foodmix.extensions.setTextWithoutWatcher
+import com.andreromano.foodmix.extensions.toVisibility
+import com.andreromano.foodmix.ui.mapper.errorMessage
 import com.google.android.material.chip.Chip
-import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.item_category_chip.view.*
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.recipe_details_fragment.*
 
 class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
@@ -29,17 +32,39 @@ class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
     }
 
     private val controller: RecipeDetailsPagerController by lazy {
-        RecipeDetailsPagerController(viewModel::addIngredientToShoppingList)
+        RecipeDetailsPagerController(
+            viewModel::addIngredientToShoppingList,
+            viewModel::reviewUserClicked,
+            viewModel::reviewFavoriteClicked,
+            viewModel::reviewReplyClicked
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         rv_pager.layoutManager = LinearLayoutManager(requireContext())
+        rv_pager.setHasFixedSize(false)
         rv_pager.setController(controller)
 
+
+        btn_nav_back.setOnClickListener {
+            viewModel.backClicked()
+        }
+        btn_action.setOnClickListener {
+            viewModel.favoriteClicked()
+        }
         tab_layout.addOnTabSelectedListener {
             viewModel.tabSelected(RecipeDetailsContract.ViewState.Tab.values()[it.position])
+        }
+        btn_review_attach.setOnClickListener {
+            // TODO
+        }
+        et_review_input.setTextChangedListener {
+            viewModel.reviewInputChanged(it.toString())
+        }
+        btn_send_review.setOnClickListener {
+            viewModel.sendReviewClicked()
         }
 
 
@@ -49,19 +74,19 @@ class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
             }
         })
         viewModel.error.observe(viewLifecycleOwner, EventObserver {
-
+            Snackbar.make(requireView(), it.errorMessage, Snackbar.LENGTH_LONG).show()
         })
-        viewModel.showAddIngredientToShoppingListSuccess.observe(viewLifecycleOwner, Observer {
-
+        viewModel.showAddIngredientToShoppingListSuccess.observe(viewLifecycleOwner, EventObserver { ingredient ->
+            Snackbar.make(requireView(), "Added $ingredient to shopping list!", Snackbar.LENGTH_LONG).show()
         })
         viewModel.ingredientsToBeAddedToShoppingListLoading.observe(viewLifecycleOwner, Observer {
-
+            // TODO
         })
         viewModel.isFavorite.observe(viewLifecycleOwner, Observer {
-
+            btn_action.setImageResource(if (it) R.drawable.ic_favorite_filled_24 else R.drawable.ic_favorite_empty_24)
         })
         viewModel.isFavoriteLoading.observe(viewLifecycleOwner, Observer {
-
+            // TODO
         })
         viewModel.imageUrl.observe(viewLifecycleOwner, Observer {
             // TODO: add placeholder later on
@@ -106,15 +131,23 @@ class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
             controller.reviews = it
         })
         viewModel.reviewInput.observe(viewLifecycleOwner, Observer {
-
+            if (it.orEmpty() != et_review_input.text.toString()) {
+                et_review_input.setTextWithoutWatcher(it)
+            }
         })
         viewModel.reviewButtonState.observe(viewLifecycleOwner, Observer {
-
+            pb_send_review.toVisibility = it == RecipeDetailsContract.ViewState.ButtonState.LOADING
+            btn_send_review.toVisibility = it != RecipeDetailsContract.ViewState.ButtonState.LOADING
+            btn_send_review.isEnabled = it == RecipeDetailsContract.ViewState.ButtonState.ENABLED
+            btn_send_review.imageTintList
         })
         viewModel.selectedTab.observe(viewLifecycleOwner, Observer {
             controller.tab = it
+            cl_review_input.toVisibility = it == RecipeDetailsContract.ViewState.Tab.REVIEWS
+            val padding =
+                if (it == RecipeDetailsContract.ViewState.Tab.REVIEWS) resources.getDimension(R.dimen.recipe_details_review_input_height).toInt()
+                else 0
+            rv_pager.setPaddingRelative(0, 0, 0, padding)
         })
-
-
     }
 }

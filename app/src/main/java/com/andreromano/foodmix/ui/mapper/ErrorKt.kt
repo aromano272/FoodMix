@@ -8,4 +8,5 @@ val ErrorKt.errorMessage: String
         ErrorKt.Unauthorized -> "Unauthorized"
         ErrorKt.Generic -> "Generic"
         ErrorKt.Network -> "Network"
+        ErrorKt.NotFound -> "Not Found"
     }

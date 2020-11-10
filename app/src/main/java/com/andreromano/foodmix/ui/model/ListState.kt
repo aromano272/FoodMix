@@ -6,5 +6,5 @@ sealed class ListState<out T> {
     object Loading : ListState<Nothing>()
     data class Results<T>(val results: List<T>) : ListState<T>()
     object EmptyState : ListState<Nothing>()
-    data class Error<T>(val error: ErrorKt) : ListState<T>()
+    data class Error(val error: ErrorKt) : ListState<Nothing>()
 }

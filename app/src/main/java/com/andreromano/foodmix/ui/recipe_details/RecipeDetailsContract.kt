@@ -8,6 +8,7 @@ import com.andreromano.foodmix.core.Minutes
 import com.andreromano.foodmix.domain.model.Category
 import com.andreromano.foodmix.domain.model.Direction
 import com.andreromano.foodmix.domain.model.Review
+import com.andreromano.foodmix.domain.model.User
 import com.andreromano.foodmix.ui.model.ListState
 
 interface RecipeDetailsContract {
@@ -56,15 +57,21 @@ interface RecipeDetailsContract {
 
     interface ViewActions {
         fun backClicked()
+        fun favoriteClicked()
         fun tabSelected(tab: ViewState.Tab)
 
         fun addIngredientToShoppingList(ingredient: Ingredient)
         fun reviewInputChanged(comment: String)
         fun sendReviewClicked()
+
+        fun reviewUserClicked(review: Review)
+        fun reviewFavoriteClicked(review: Review)
+        fun reviewReplyClicked(review: Review)
     }
 
     sealed class ViewInstruction {
         object NavigateBack : ViewInstruction()
+        class NavigateToUserDetails(val user: User) : ViewInstruction()
     }
 
 }

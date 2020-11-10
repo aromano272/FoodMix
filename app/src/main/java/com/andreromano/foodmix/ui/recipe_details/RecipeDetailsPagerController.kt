@@ -8,7 +8,10 @@ import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.ui.utils.EpoxyModelProperty
 
 class RecipeDetailsPagerController(
-    private val addIngredientClicked: (Ingredient) -> Unit
+    private val addIngredientClicked: (Ingredient) -> Unit,
+    private val onReviewUserClicked: (Review) -> Unit,
+    private val onReviewFavoriteClicked: (Review) -> Unit,
+    private val onReviewReplyClicked: (Review) -> Unit
 ) : EpoxyController(
     EpoxyAsyncUtil.getAsyncBackgroundHandler(),
     EpoxyAsyncUtil.getAsyncBackgroundHandler()
@@ -29,8 +32,21 @@ class RecipeDetailsPagerController(
                     onAddClick(addIngredientClicked)
                 }
             }
-            RecipeDetailsContract.ViewState.Tab.DIRECTIONS -> TODO()
-            RecipeDetailsContract.ViewState.Tab.REVIEWS -> TODO()
+            RecipeDetailsContract.ViewState.Tab.DIRECTIONS -> directions.forEachIndexed { index, direction ->
+                recipeDirection {
+                    id(index)
+                    direction(direction)
+                }
+            }
+            RecipeDetailsContract.ViewState.Tab.REVIEWS -> reviews.forEach { review ->
+                recipeReview {
+                    id(review.id)
+                    review(review)
+                    onUserClicked(onReviewUserClicked)
+                    onFavoriteClicked(onReviewFavoriteClicked)
+                    onReplyClicked(onReviewReplyClicked)
+                }
+            }
         }
     }
 }

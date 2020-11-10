@@ -38,4 +38,12 @@ class FakeApi : Api {
     override suspend fun addIngredientToShoppingList(ingredient: Ingredient): ResultKt<Unit> = middleware {
         ResultKt.Success(Unit)
     }
+
+    override suspend fun addFavorite(recipeId: RecipeId): ResultKt<Unit> = middleware {
+        ResultKt.Success(Unit)
+    }
+
+    override suspend fun removeFavorite(recipeId: RecipeId): ResultKt<Unit> = middleware {
+        ResultKt.Success(Unit)
+    }
 }

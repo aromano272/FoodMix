@@ -6,6 +6,7 @@ import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.network.model.CategoryResult
 import kotlinx.coroutines.runBlocking
 import java.util.*
+import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 object FakeData {
@@ -19,7 +20,7 @@ object FakeData {
     private val rng = Random(1)
 
     private val id
-        get() = rng.nextLong().toString()
+        get() = rng.nextLong().absoluteValue.toString()
 
     val imageUrl = "https://picsum.photos/200/300"
 
@@ -38,7 +39,7 @@ object FakeData {
     }
 
     val directions: List<Direction> = (0..8).map {
-        Direction("description $id", imageUrl)
+        Direction("title $id", "description $id", "https://picsum.photos/300/200")
     }
 
     private fun generateRandomDirections(): List<Direction> {

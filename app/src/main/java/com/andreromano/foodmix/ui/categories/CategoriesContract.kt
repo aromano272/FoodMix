@@ -1,6 +1,7 @@
 package com.andreromano.foodmix.ui.categories
 
 import androidx.lifecycle.LiveData
+import com.andreromano.foodmix.core.ErrorKt
 import com.andreromano.foodmix.core.Event
 import com.andreromano.foodmix.domain.model.Category
 import com.andreromano.foodmix.ui.model.ListState
@@ -11,6 +12,8 @@ interface CategoriesContract {
 
     interface ViewState {
         val navigation: LiveData<Event<ViewInstruction>>
+        val error: LiveData<Event<ErrorKt>>
+
         val searchQueryInput: LiveData<String>
         val categories: LiveData<ListState<Category>>
     }

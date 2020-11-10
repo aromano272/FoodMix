@@ -8,6 +8,10 @@ import com.andreromano.foodmix.domain.model.Direction
 import com.andreromano.foodmix.domain.model.Recipe
 import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.extensions.launch
+import com.andreromano.foodmix.extensions.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel(
@@ -15,14 +19,14 @@ class RecipeDetailsViewModel(
     private val repository: Repository
 ) : ViewModel(), RecipeDetailsContract.ViewModel {
 
-    private val _navigation = MutableLiveData<Event<RecipeDetailsContract.ViewInstruction>>()
-    override val navigation: LiveData<Event<RecipeDetailsContract.ViewInstruction>> = _navigation
+    private val _navigation = MutableLiveData<RecipeDetailsContract.ViewInstruction>()
+    override val navigation: LiveData<Event<RecipeDetailsContract.ViewInstruction>> = _navigation.map { Event(it) }
 
-    private val _error = MutableLiveData<Event<ErrorKt>>()
-    override val error: LiveData<Event<ErrorKt>> = _error
+    private val _error = MutableLiveData<ErrorKt>()
+    override val error: LiveData<Event<ErrorKt>> = _error.map { Event(it) }
 
-    private val _showAddIngredientToShoppingListSuccess = MutableLiveData<Event<Ingredient>>()
-    override val showAddIngredientToShoppingListSuccess: LiveData<Event<Ingredient>> = _showAddIngredientToShoppingListSuccess
+    private val _showAddIngredientToShoppingListSuccess = MutableLiveData<Ingredient>()
+    override val showAddIngredientToShoppingListSuccess: LiveData<Event<Ingredient>> = _showAddIngredientToShoppingListSuccess.map { Event(it) }
 
     private val _ingredientsToBeAddedToShoppingListLoading = MutableLiveData<List<Ingredient>>()
     override val ingredientsToBeAddedToShoppingListLoading: LiveData<List<Ingredient>> = _ingredientsToBeAddedToShoppingListLoading
@@ -98,13 +102,31 @@ class RecipeDetailsViewModel(
                     _directions.value = result.data.directions
                     _reviews.value = result.data.reviews
                 }
-                is ResultKt.Failure -> _error.value = Event(result.error)
+                is ResultKt.Failure -> _error.value = result.error
             }
         }
     }
 
     override fun backClicked() {
-        _navigation.value = Event(RecipeDetailsContract.ViewInstruction.NavigateBack)
+        _navigation.value = RecipeDetailsContract.ViewInstruction.NavigateBack
+    }
+
+    override fun favoriteClicked() = launch {
+        if (_isFavoriteLoading.value == true) return@launch
+
+        _isFavoriteLoading.value = true
+        val newFavoriteState = isFavorite.value != true
+
+        val result =
+            if (newFavoriteState) repository.addFavorite(initialRecipe.id)
+            else repository.removeFavorite(initialRecipe.id)
+
+        when (result) {
+            is ResultKt.Success -> _isFavorite.value = newFavoriteState
+            is ResultKt.Failure -> _error.value = result.error
+        }
+
+        _isFavoriteLoading.value = false
     }
 
     override fun tabSelected(tab: RecipeDetailsContract.ViewState.Tab) {
@@ -118,8 +140,8 @@ class RecipeDetailsViewModel(
         val result = repository.addIngredientToShoppingList(ingredient)
 
         when (result) {
-            is ResultKt.Success -> _showAddIngredientToShoppingListSuccess.value = Event(ingredient)
-            is ResultKt.Failure -> _error.value = Event(result.error)
+            is ResultKt.Success -> _showAddIngredientToShoppingListSuccess.value = ingredient
+            is ResultKt.Failure -> _error.value = result.error
         }
 
         _ingredientsToBeAddedToShoppingListLoading.value = _ingredientsToBeAddedToShoppingListLoading.value?.minus(ingredient)
@@ -142,11 +164,23 @@ class RecipeDetailsViewModel(
 
         when (result) {
             is ResultKt.Success -> _reviews.value = _reviews.value?.plus(result.data)
-            is ResultKt.Failure -> _error.value = Event(result.error)
+            is ResultKt.Failure -> _error.value = result.error
         }
 
         _reviewButtonState.value = RecipeDetailsContract.ViewState.ButtonState.DISABLED
         _reviewInput.value = ""
+    }
+
+    override fun reviewUserClicked(review: Review) {
+        _navigation.value = RecipeDetailsContract.ViewInstruction.NavigateToUserDetails(review.user)
+    }
+
+    override fun reviewFavoriteClicked(review: Review) {
+        // TODO
+    }
+
+    override fun reviewReplyClicked(review: Review) {
+        // TODO
     }
 
 

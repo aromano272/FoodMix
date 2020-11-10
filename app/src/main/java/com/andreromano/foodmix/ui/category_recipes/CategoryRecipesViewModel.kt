@@ -6,6 +6,7 @@ import com.andreromano.foodmix.core.ResultKt
 import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.domain.model.Category
 import com.andreromano.foodmix.domain.model.Recipe
+import com.andreromano.foodmix.extensions.map
 import com.andreromano.foodmix.ui.model.ListState
 import kotlinx.coroutines.launch
 
@@ -14,8 +15,8 @@ class CategoryRecipesViewModel(
     private val repository: Repository
 ) : ViewModel(), CategoryRecipesContract.ViewModel {
 
-    private val _navigation = MutableLiveData<Event<CategoryRecipesContract.ViewInstruction>>()
-    override val navigation: LiveData<Event<CategoryRecipesContract.ViewInstruction>> = _navigation
+    private val _navigation = MutableLiveData<CategoryRecipesContract.ViewInstruction>()
+    override val navigation: LiveData<Event<CategoryRecipesContract.ViewInstruction>> = _navigation.map { Event(it) }
 
     private val _recipes = MutableLiveData<ListState<Recipe>>(ListState.Loading)
     override val recipes: LiveData<ListState<Recipe>> = _recipes
@@ -34,7 +35,7 @@ class CategoryRecipesViewModel(
     }
 
     override fun recipeClicked(recipe: Recipe) {
-        _navigation.value = Event(CategoryRecipesContract.ViewInstruction.NavigateToRecipeDetails(recipe))
+        _navigation.value = CategoryRecipesContract.ViewInstruction.NavigateToRecipeDetails(recipe)
     }
 
 

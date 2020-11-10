@@ -9,14 +9,15 @@
     android:paddingEnd="16dp"
     >
 
-    <!--  TODO: selectableItemBackground doesn't seem to be working  -->
     <ImageButton
         android:id="@+id/ib_add_ingredient"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:minHeight="24dp"
+        android:minWidth="24dp"
         app:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/ic_add_circle_outline"
+        app:srcCompat="@drawable/ic_add_circle_outline_18"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:paddingTop="8dp"

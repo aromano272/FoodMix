@@ -1,6 +1,8 @@
 package com.andreromano.foodmix.ui.epoxy_models
 
+import android.widget.ImageView
 import android.widget.TextView
+import coil.load
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyModelClass
 import com.airbnb.epoxy.EpoxyModelWithHolder
@@ -8,8 +10,10 @@ import com.andreromano.foodmix.R
 import com.andreromano.foodmix.domain.model.Category
 
 
-@EpoxyModelClass(layout = R.layout.item_category)
+@EpoxyModelClass
 abstract class CategoryModel : EpoxyModelWithHolder<CategoryModel.Holder>() {
+
+    override fun getDefaultLayout(): Int = R.layout.item_category
 
     @EpoxyAttribute
     lateinit var category: Category
@@ -19,14 +23,15 @@ abstract class CategoryModel : EpoxyModelWithHolder<CategoryModel.Holder>() {
 
 
     override fun bind(holder: Holder) = with (holder) {
-        tv_image.text = "categories = ${category.imageUrl}"
-        tv_name.text = "title = ${category.name}"
+        // TODO: placeholder
+        iv_image.load(category.imageUrl)
+        tv_name.text = category.name
 
         view.setOnClickListener { onClick(category) }
     }
 
     class Holder : KotlinEpoxyHolder() {
-        val tv_image by bind<TextView>(R.id.tv_image)
+        val iv_image by bind<ImageView>(R.id.iv_image)
         val tv_name by bind<TextView>(R.id.tv_name)
     }
 
