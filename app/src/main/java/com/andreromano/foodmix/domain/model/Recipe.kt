@@ -2,7 +2,7 @@ package com.andreromano.foodmix.domain.model
 
 import android.os.Parcelable
 import androidx.annotation.FloatRange
-import com.andreromano.foodmix.core.Ingredient
+import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.core.Minutes
 import com.andreromano.foodmix.core.RecipeId
 import kotlinx.android.parcel.Parcelize

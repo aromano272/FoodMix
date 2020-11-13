@@ -3,7 +3,7 @@ package com.andreromano.foodmix.ui.recipe_details
 import androidx.lifecycle.LiveData
 import com.andreromano.foodmix.core.ErrorKt
 import com.andreromano.foodmix.core.Event
-import com.andreromano.foodmix.core.Ingredient
+import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.core.Minutes
 import com.andreromano.foodmix.domain.model.Category
 import com.andreromano.foodmix.domain.model.Direction

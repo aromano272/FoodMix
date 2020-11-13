@@ -1,59 +1,19 @@
 package com.andreromano.foodmix.data
 
+import com.andreromano.foodmix.core.CombineResult
 import com.andreromano.foodmix.core.ErrorKt
 import com.andreromano.foodmix.core.Resource
 import com.andreromano.foodmix.core.ResultKt
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import com.andreromano.foodmix.extensions.startWithPreEmission
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
-sealed class CombineResult<out T> {
-    object ToBeEmitted : CombineResult<Nothing>()
-    data class Emission<out T>(val data: T) : CombineResult<T>()
-
-    fun orNull(): T? = when (this) {
-        is ToBeEmitted -> null
-        is Emission -> this.data
-    }
-}
-
-private fun <T> Flow<T>.startWithPreEmission(): Flow<CombineResult<T>> = mapLatest { CombineResult.Emission(it) as CombineResult<T> }.onStart { emit(CombineResult.ToBeEmitted) }
 
 abstract class NetworkBoundResource<EntityModel : Any?, NetworkModel : Any, DomainModel : Any>(
     private val fetchStrategy: FetchStrategy = FetchStrategy.ALWAYS
 ) {
 
-//    private val result: MutableStateFlow<Resource<DomainModel>> = MutableStateFlow(Resource.Loading(null))
-
-    init {
-//        result.
-//        val dbValue = loadFromDb().first()
-    }
-
-//    fun asFlow1(): Flow<Resource<DomainModel>> = flow {
-//        emit(Resource.Loading(null))
-//        val dbValue = loadFromDb().first()
-//        if (shouldFetch(dbValue)) {
-//            loadFromDb().startWithPreEmission().combine(::createCall.asFlow().startWithPreEmission()) { dbValue, result ->
-//                if (dbValue)
-//            }
-//            emit(Resource.Loading(mapToDomainInternal(dbValue)))
-//            val result = createCall()
-//
-//            loadFromDb().combine(createCall())
-//
-//        } else {
-//            emitAll(loadFromDb().mapLatest { newData ->
-//                if (newData != null) Resource.Success(mapToDomain(newData))
-//                else Resource.Failure(null, ErrorKt.NotFound)
-//            })
-//        }
-//    }
-
     fun asFlow(): Flow<Resource<DomainModel>> = flow {
-//        val resultFlow = ::fetchFromNetworkAndSaveCallResult.asFlow()
         Timber.e("boomshakalaka flow {}")
 
         emit(Resource.Loading(null))
@@ -61,7 +21,7 @@ abstract class NetworkBoundResource<EntityModel : Any?, NetworkModel : Any, Doma
         val finalFlow = if (shouldFetch) {
             val resultFlow = ::fetchFromNetworkAndSaveCallResult.asFlow()
 
-            loadFromDb().combine(resultFlow.startWithPreEmission()) { dbValue, result ->
+            combine(loadFromDb(), resultFlow.startWithPreEmission()) { dbValue, result ->
                 Timber.e("boomshakalaka combine $dbValue, $result")
                 when {
                     result is CombineResult.ToBeEmitted -> Resource.Loading(mapToDomainInternal(dbValue))
@@ -78,67 +38,13 @@ abstract class NetworkBoundResource<EntityModel : Any?, NetworkModel : Any, Doma
             }
         }.distinctUntilChanged()
 
-
-//        val finalFlow = loadFromDb().startWithPreEmission().combine(resultFlow.startWithPreEmission()) { dbValue, result ->
-//            Timber.e("boomshakalaka combine $dbValue, $result")
-//            when {
-//                dbValue is CombineResult.ToBeEmitted -> Resource.Loading(null)
-//                dbValue is CombineResult.Emission && result is CombineResult.ToBeEmitted -> Resource.Loading(mapToDomain(dbValue.data))
-//                dbValue is CombineResult.Emission && result is CombineResult.Emission -> when (result.data) {
-//                    is ResultKt.Success -> Resource.Success(mapToDomain(dbValue.data))
-//                    is ResultKt.Failure -> Resource.Failure(mapToDomainInternal(dbValue.data), result.data.error)
-//                }
-//                else -> throw IllegalStateException()
-//            }
-//        }.distinctUntilChanged()
-
         emitAll(finalFlow)
     }
-
-//    private lateinit var scope: CoroutineScope
 
     private suspend fun fetchFromNetworkAndSaveCallResult(): ResultKt<NetworkModel> = createCall().also {
         Timber.e("boomshakalaka fetchFromNetwork")
         if (it is ResultKt.Success) saveCallResult(it.data)
     }
-
-
-//    private fun fetchFromNetwork(): Flow<Resource<DomainModel>> {
-//        val shared = MutableSharedFlow<Resource<DomainModel>>()
-//
-//        val result = loadFromDb().startWithPreEmission().combine(::createCall.asFlow().startWithPreEmission()) { dbValue, result ->
-//
-//        }
-//
-//        scope.launch {
-//            result.collect {
-//                shared.tryEmit()
-//            }
-//        }
-//
-//        loadFromDb().startWithPreEmission().combine(::createCall.asFlow().startWithPreEmission()) { dbValue, result ->
-//
-//        }
-//
-//        return shared
-//    }
-
-//    fun asFlow(): Flow<Resource<DomainModel>> = flow {
-//        emit(Resource.Loading(null))
-//        val dbValue = loadFromDb().first()
-//        if (shouldFetch(dbValue)) {
-//            emit(Resource.Loading(mapToDomainInternal(dbValue)))
-//            val result = createCall()
-//
-//            loadFromDb().combine(createCall())
-//
-//        } else {
-//            emitAll(loadFromDb().mapLatest { newData ->
-//                if (newData != null) Resource.Success(mapToDomain(newData))
-//                else Resource.Failure(null, ErrorKt.NotFound)
-//            })
-//        }
-//    }
 
     protected abstract suspend fun saveCallResult(result: NetworkModel)
 
@@ -155,7 +61,6 @@ abstract class NetworkBoundResource<EntityModel : Any?, NetworkModel : Any, Doma
     private suspend fun mapToDomainInternal(entity: EntityModel): DomainModel? = entity?.let { mapToDomain(it) }
 
     protected abstract suspend fun createCall(): ResultKt<NetworkModel>
-
 }
 
 enum class FetchStrategy {

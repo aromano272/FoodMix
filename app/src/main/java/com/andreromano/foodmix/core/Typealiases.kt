@@ -4,8 +4,7 @@ typealias RecipeId = String
 typealias CategoryId = String
 typealias ReviewId = String
 typealias UserId = String
-
-typealias Ingredient = String
+typealias IngredientId = String
 
 typealias Minutes = Int
 typealias Millis = Long

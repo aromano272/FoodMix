@@ -4,8 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/categories"
+    app:startDestination="@id/recipes"
     >
+
+    <fragment
+        android:id="@+id/recipes"
+        android:name="com.andreromano.foodmix.ui.recipes.RecipesFragment"
+        android:label="Recipes"
+        tools:layout="@layout/recipes_fragment"
+        />
 
     <fragment
         android:id="@+id/categories"

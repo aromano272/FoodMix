@@ -1,7 +1,7 @@
 package com.andreromano.foodmix.network
 
 import com.andreromano.foodmix.core.CategoryId
-import com.andreromano.foodmix.core.Ingredient
+import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.core.RecipeId
 import com.andreromano.foodmix.core.ResultKt
 import com.andreromano.foodmix.domain.model.Category

@@ -3,10 +3,7 @@ package com.andreromano.foodmix.ui.recipe_details
 import androidx.lifecycle.*
 import com.andreromano.foodmix.core.*
 import com.andreromano.foodmix.data.Repository
-import com.andreromano.foodmix.domain.model.Category
-import com.andreromano.foodmix.domain.model.Direction
-import com.andreromano.foodmix.domain.model.Recipe
-import com.andreromano.foodmix.domain.model.Review
+import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.extensions.launch
 import com.andreromano.foodmix.extensions.map
 import kotlinx.coroutines.Dispatchers

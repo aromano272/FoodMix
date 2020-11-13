@@ -15,6 +15,7 @@ import com.andreromano.foodmix.extensions.addOnTabSelectedListener
 import com.andreromano.foodmix.extensions.setTextChangedListener
 import com.andreromano.foodmix.extensions.setTextWithoutWatcher
 import com.andreromano.foodmix.extensions.toVisibility
+import com.andreromano.foodmix.ui.mapper.colorResId
 import com.andreromano.foodmix.ui.mapper.errorMessage
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -79,69 +80,70 @@ class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
         viewModel.showAddIngredientToShoppingListSuccess.observe(viewLifecycleOwner, EventObserver { ingredient ->
             Snackbar.make(requireView(), "Added $ingredient to shopping list!", Snackbar.LENGTH_LONG).show()
         })
-        viewModel.ingredientsToBeAddedToShoppingListLoading.observe(viewLifecycleOwner, Observer {
+        viewModel.ingredientsToBeAddedToShoppingListLoading.observe(viewLifecycleOwner, {
             // TODO
         })
-        viewModel.isFavorite.observe(viewLifecycleOwner, Observer {
+        viewModel.isFavorite.observe(viewLifecycleOwner, {
             btn_action.setImageResource(if (it) R.drawable.ic_favorite_filled_24 else R.drawable.ic_favorite_empty_24)
         })
-        viewModel.isFavoriteLoading.observe(viewLifecycleOwner, Observer {
+        viewModel.isFavoriteLoading.observe(viewLifecycleOwner, {
             // TODO
         })
-        viewModel.imageUrl.observe(viewLifecycleOwner, Observer {
+        viewModel.imageUrl.observe(viewLifecycleOwner, {
             // TODO: add placeholder later on
             iv_header.load(it)
         })
-        viewModel.title.observe(viewLifecycleOwner, Observer {
+        viewModel.title.observe(viewLifecycleOwner, {
             tv_title.text = it
         })
-        viewModel.description.observe(viewLifecycleOwner, Observer {
+        viewModel.description.observe(viewLifecycleOwner, {
             tv_description.text = it
         })
-        viewModel.rating.observe(viewLifecycleOwner, Observer {
+        viewModel.rating.observe(viewLifecycleOwner, {
             rb_rating.rating = it.toFloat()
         })
-        viewModel.reviewsCount.observe(viewLifecycleOwner, Observer {
+        viewModel.reviewsCount.observe(viewLifecycleOwner, {
             tv_rating_count.text = "$it reviews"
         })
-        viewModel.duration.observe(viewLifecycleOwner, Observer {
+        viewModel.duration.observe(viewLifecycleOwner, {
             tv_duration.text = "$it min"
         })
-        viewModel.calories.observe(viewLifecycleOwner, Observer {
+        viewModel.calories.observe(viewLifecycleOwner, {
             tv_calories.text = "$it kcal"
         })
-        viewModel.servings.observe(viewLifecycleOwner, Observer {
+        viewModel.servings.observe(viewLifecycleOwner, {
             tv_servings.text = "$it"
         })
-        viewModel.categories.observe(viewLifecycleOwner, Observer { categories ->
+        viewModel.categories.observe(viewLifecycleOwner, { categories ->
             cg_categories.removeAllViews()
             categories.forEach { category ->
                 val chip = layoutInflater.inflate(R.layout.item_category_chip, cg_categories, false) as Chip
                 chip.text = category.name
+                chip.setChipBackgroundColorResource(category.colorResId)
                 cg_categories.addView(chip)
             }
         })
-        viewModel.ingredients.observe(viewLifecycleOwner, Observer {
+        viewModel.ingredients.observe(viewLifecycleOwner, {
             controller.ingredients = it
         })
-        viewModel.directions.observe(viewLifecycleOwner, Observer {
+        viewModel.directions.observe(viewLifecycleOwner, {
             controller.directions = it
         })
-        viewModel.reviews.observe(viewLifecycleOwner, Observer {
+        viewModel.reviews.observe(viewLifecycleOwner, {
             controller.reviews = it
         })
-        viewModel.reviewInput.observe(viewLifecycleOwner, Observer {
+        viewModel.reviewInput.observe(viewLifecycleOwner, {
             if (it.orEmpty() != et_review_input.text.toString()) {
                 et_review_input.setTextWithoutWatcher(it)
             }
         })
-        viewModel.reviewButtonState.observe(viewLifecycleOwner, Observer {
+        viewModel.reviewButtonState.observe(viewLifecycleOwner, {
             pb_send_review.toVisibility = it == RecipeDetailsContract.ViewState.ButtonState.LOADING
             btn_send_review.toVisibility = it != RecipeDetailsContract.ViewState.ButtonState.LOADING
             btn_send_review.isEnabled = it == RecipeDetailsContract.ViewState.ButtonState.ENABLED
             btn_send_review.imageTintList
         })
-        viewModel.selectedTab.observe(viewLifecycleOwner, Observer {
+        viewModel.selectedTab.observe(viewLifecycleOwner, {
             controller.tab = it
             cl_review_input.toVisibility = it == RecipeDetailsContract.ViewState.Tab.REVIEWS
             val padding =

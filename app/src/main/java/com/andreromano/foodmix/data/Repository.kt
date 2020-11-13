@@ -1,18 +1,14 @@
 package com.andreromano.foodmix.data
 
-import com.andreromano.foodmix.core.Ingredient
-import com.andreromano.foodmix.core.RecipeId
-import com.andreromano.foodmix.core.Resource
-import com.andreromano.foodmix.core.ResultKt
+import com.andreromano.foodmix.core.*
 import com.andreromano.foodmix.data.mapper.toDomain
 import com.andreromano.foodmix.data.mapper.toEntity
 import com.andreromano.foodmix.database.TransactionRunner
 import com.andreromano.foodmix.database.dao.CategoriesDao
 import com.andreromano.foodmix.database.model.CategoryEntity
-import com.andreromano.foodmix.domain.model.Category
-import com.andreromano.foodmix.domain.model.Recipe
-import com.andreromano.foodmix.domain.model.Review
+import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.network.Api
+import com.andreromano.foodmix.network.FakeData
 import com.andreromano.foodmix.network.model.CategoryResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -66,6 +62,12 @@ class Repository(
 
             override suspend fun createCall(): ResultKt<List<CategoryResult>> = api.getCategories()
         }.asFlow()
+
+    fun getIngredients(searchQuery: String? = null, ingredientTypeFilter: IngredientType? = null): Flow<Resource<List<Ingredient>>> = flow {
+        emit(Resource.Loading(null))
+        delay(1000)
+        emit(Resource.Success(FakeData.ingredients.filter { if (searchQuery != null) it.name.startsWith(searchQuery, true) else true }))
+    }
 
 //        categoriesDao.getAll(searchQuery.orEmpty()).map {
 //            ResultKt.Success(it.toDomain())

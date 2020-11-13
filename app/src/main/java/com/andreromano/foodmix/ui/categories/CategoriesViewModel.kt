@@ -25,7 +25,7 @@ class CategoriesViewModel(
     override val searchQueryInput: LiveData<String> = _searchQueryInput.asLiveData()
 
     private var flowId = 0
-    private val categoriesResult: SharedFlow<Resource<List<Category>>> = _searchQueryInput.flatMapLatest { query ->
+    private val categoriesResult: SharedFlow<Resource<List<Category>>> = _searchQueryInput.debounce(300).flatMapLatest { query ->
         Timber.e("flatMapLatest ${++flowId}")
         repository.getCategoriesNetworkBoundResource(query)
     }.shareIn(viewModelScope, SharingStarted.Lazily)

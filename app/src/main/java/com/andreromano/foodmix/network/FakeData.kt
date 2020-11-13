@@ -1,6 +1,6 @@
 package com.andreromano.foodmix.network
 
-import com.andreromano.foodmix.core.Ingredient
+import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.data.mapper.toDomain
 import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.network.model.CategoryResult
@@ -51,7 +51,7 @@ object FakeData {
     }
 
     val ingredients: List<Ingredient> = (0..10).map {
-        "ingredients $id"
+        Ingredient(id, "ingredients $id", imageUrl)
     }
 
     private fun generateRandomIngredients(): List<Ingredient> {

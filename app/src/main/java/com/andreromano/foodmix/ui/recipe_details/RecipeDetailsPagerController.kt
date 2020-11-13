@@ -2,7 +2,7 @@ package com.andreromano.foodmix.ui.recipe_details
 
 import com.airbnb.epoxy.EpoxyAsyncUtil
 import com.airbnb.epoxy.EpoxyController
-import com.andreromano.foodmix.core.Ingredient
+import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.domain.model.Direction
 import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.ui.utils.EpoxyModelProperty

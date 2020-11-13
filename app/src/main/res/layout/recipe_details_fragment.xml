@@ -401,7 +401,7 @@
             android:layout_width="@dimen/recipe_details_review_input_height"
             android:layout_height="@dimen/recipe_details_review_input_height"
             android:scaleType="center"
-            app:tint="@color/sl_text_accent_color"
+            app:tint="@color/sl_text_accent_color_enabled_state"
             app:srcCompat="@drawable/ic_send_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
