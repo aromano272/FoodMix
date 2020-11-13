@@ -51,7 +51,8 @@ object FakeData {
     }
 
     val ingredients: List<Ingredient> = (0..10).map {
-        Ingredient(id, "ingredients $id", imageUrl)
+        val randomNumber = (rng.nextDouble() * IngredientType.values().size).toInt()
+        Ingredient(id, "ingredients $id", imageUrl, IngredientType.values()[randomNumber])
     }
 
     private fun generateRandomIngredients(): List<Ingredient> {

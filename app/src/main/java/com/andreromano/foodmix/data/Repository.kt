@@ -66,7 +66,12 @@ class Repository(
     fun getIngredients(searchQuery: String? = null, ingredientTypeFilter: IngredientType? = null): Flow<Resource<List<Ingredient>>> = flow {
         emit(Resource.Loading(null))
         delay(1000)
-        emit(Resource.Success(FakeData.ingredients.filter { if (searchQuery != null) it.name.startsWith(searchQuery, true) else true }))
+        val filteredResults = FakeData.ingredients.filter {
+            val matchesSearchQuery = if (searchQuery != null) it.name.startsWith(searchQuery, true) else true
+            val matchesIngredientTypeFilter = if (ingredientTypeFilter != null) it.type == ingredientTypeFilter else true
+            matchesSearchQuery && matchesIngredientTypeFilter
+        }
+        emit(Resource.Success(filteredResults))
     }
 
 //        categoriesDao.getAll(searchQuery.orEmpty()).map {

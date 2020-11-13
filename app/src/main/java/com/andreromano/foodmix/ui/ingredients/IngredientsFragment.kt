@@ -58,7 +58,7 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
             viewModel.ingredientTypeClicked(ingredientType)
         }
 
-        rv_ingredients.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+        rv_ingredients.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
         rv_ingredients.setControllerAndBuildModels(ingredientsController)
 
         rv_selected_ingredients.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
