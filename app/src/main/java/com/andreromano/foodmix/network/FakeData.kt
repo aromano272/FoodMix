@@ -22,7 +22,8 @@ object FakeData {
     private val id
         get() = rng.nextLong().absoluteValue.toString()
 
-    val imageUrl = "https://picsum.photos/200/300"
+    private val imageUrl
+        get() = "https://picsum.photos/200/300?id=${Random().nextInt()}"
 
     private fun newCategory(): CategoryResult = id.let { CategoryResult(it, "category $it", imageUrl) }
 
@@ -39,7 +40,7 @@ object FakeData {
     }
 
     val directions: List<Direction> = (0..8).map {
-        Direction("title $id", "description $id", "https://picsum.photos/300/200")
+        Direction("title $id", "description $id", imageUrl)
     }
 
     private fun generateRandomDirections(): List<Direction> {

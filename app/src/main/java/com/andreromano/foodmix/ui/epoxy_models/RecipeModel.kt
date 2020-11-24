@@ -28,7 +28,6 @@ abstract class RecipeModel : EpoxyModelWithHolder<RecipeModel.Holder>() {
 
 
     override fun bind(holder: Holder) = with(holder) {
-        // TODO: implement placeholder
         iv_image.load(recipe.imageUrl)
         tv_title.text = recipe.title
         tv_rating_count.text = "${recipe.ratingsCount}"

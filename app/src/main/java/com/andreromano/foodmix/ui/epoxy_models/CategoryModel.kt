@@ -23,7 +23,6 @@ abstract class CategoryModel : EpoxyModelWithHolder<CategoryModel.Holder>() {
 
 
     override fun bind(holder: Holder) = with (holder) {
-        // TODO: placeholder
         iv_image.load(category.imageUrl)
         tv_name.text = category.name
 

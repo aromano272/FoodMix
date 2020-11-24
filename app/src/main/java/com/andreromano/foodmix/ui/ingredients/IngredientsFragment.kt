@@ -61,7 +61,7 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
         rv_ingredients.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
         rv_ingredients.setControllerAndBuildModels(ingredientsController)
 
-        rv_selected_ingredients.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        rv_selected_ingredients.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL) // LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rv_selected_ingredients.adapter = selectedIngredientsAdapter
 
         et_search.setTextChangedListener {

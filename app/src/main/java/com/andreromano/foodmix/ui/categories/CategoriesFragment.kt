@@ -15,6 +15,7 @@ import com.andreromano.foodmix.core.EventObserver
 import com.andreromano.foodmix.extensions.setTextChangedListener
 import com.andreromano.foodmix.extensions.setTextWithoutWatcher
 import com.andreromano.foodmix.ui.mapper.errorMessage
+import com.andreromano.foodmix.ui.recipes.RecipesFragmentDirections
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.categories_fragment.*
 import kotlinx.coroutines.delay
@@ -46,7 +47,7 @@ class CategoriesFragment : Fragment(R.layout.categories_fragment) {
         viewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 is CategoriesContract.ViewInstruction.NavigateToCategoryRecipes ->
-                    findNavController().navigate(CategoriesFragmentDirections.actionCategoriesToCategoryRecipes(it.category))
+                    findNavController().navigate(RecipesFragmentDirections.actionRecipesToCategoryRecipes(it.category))
             }
         })
 

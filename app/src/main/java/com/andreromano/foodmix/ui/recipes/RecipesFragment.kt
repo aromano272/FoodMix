@@ -28,4 +28,8 @@ class RecipesFragment : Fragment(R.layout.recipes_fragment) {
 
     }
 
+    override fun onDestroyView() {
+        vp_container.adapter = null
+        super.onDestroyView()
+    }
 }

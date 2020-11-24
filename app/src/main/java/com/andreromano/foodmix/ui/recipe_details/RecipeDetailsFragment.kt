@@ -90,7 +90,6 @@ class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
             // TODO
         })
         viewModel.imageUrl.observe(viewLifecycleOwner, {
-            // TODO: add placeholder later on
             iv_header.load(it)
         })
         viewModel.title.observe(viewLifecycleOwner, {

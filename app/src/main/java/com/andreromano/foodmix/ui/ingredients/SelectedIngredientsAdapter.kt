@@ -33,7 +33,6 @@ class SelectedIngredientsAdapter(
         private val removeIngredientClicked: (Ingredient) -> Unit
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(ingredient: Ingredient) = with (containerView) {
-            // TODO: placeholder
             iv_image.load(ingredient.imageUrl)
             tv_name.text = ingredient.name
 

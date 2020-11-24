@@ -28,7 +28,6 @@ abstract class IngredientModel : EpoxyModelWithHolder<IngredientModel.Holder>() 
 
 
     override fun bind(holder: Holder) = with(holder) {
-        // TODO: placeholder
         iv_image.load(ingredient.imageUrl)
         tv_name.text = ingredient.name
 
