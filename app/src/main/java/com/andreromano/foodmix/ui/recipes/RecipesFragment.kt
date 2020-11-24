@@ -8,13 +8,12 @@ import kotlinx.android.synthetic.main.recipes_fragment.*
 
 class RecipesFragment : Fragment(R.layout.recipes_fragment) {
 
-    private val recipesPagerAdapter: RecipesPagerAdapter by lazy {
-        RecipesPagerAdapter(this)
-    }
+    private lateinit var recipesPagerAdapter: RecipesPagerAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        recipesPagerAdapter = RecipesPagerAdapter(this)
         vp_container.adapter = recipesPagerAdapter
 
         TabLayoutMediator(tab_layout, vp_container) { tab, position ->
