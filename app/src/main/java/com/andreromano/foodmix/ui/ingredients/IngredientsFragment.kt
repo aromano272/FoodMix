@@ -1,11 +1,13 @@
 package com.andreromano.foodmix.ui.ingredients
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.andreromano.foodmix.Injection
 import com.andreromano.foodmix.R
@@ -19,6 +21,7 @@ import com.andreromano.foodmix.ui.mapper.string
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.ingredients_fragment.*
+
 
 class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
 
@@ -61,8 +64,27 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
         rv_ingredients.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
         rv_ingredients.setControllerAndBuildModels(ingredientsController)
 
-        rv_selected_ingredients.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL) // LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        var initialRvIngredientsPaddingBottomPx: Int = 0
+        rv_ingredients.post {
+            initialRvIngredientsPaddingBottomPx = rv_ingredients.paddingBottom
+        }
+
+        rv_selected_ingredients.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rv_selected_ingredients.adapter = selectedIngredientsAdapter
+//        rv_selected_ingredients.isNestedScrollingEnabled = false
+
+        rv_selected_ingredients.addOnItemTouchListener(object : OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                val action = e.action
+                when (action) {
+                    MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        })
 
         et_search.setTextChangedListener {
             viewModel.searchQueryInputChanged(it.toString())
@@ -93,7 +115,11 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
         }
         viewModel.selectedIngredients.observe(viewLifecycleOwner) {
             cl_selected_ingredients.toVisibility = it.isNotEmpty()
+            ingredientsController.selectedIngredientIds = it.map { it.id }
             selectedIngredientsAdapter.submitList(it)
+
+            val rvIngredientsPaddingPx = if (it.isEmpty()) 0 else resources.getDimensionPixelSize(R.dimen.ingredients_selected_ingredients_height)
+            rv_ingredients.setPadding(0, 0, 0, initialRvIngredientsPaddingBottomPx + rvIngredientsPaddingPx)
         }
     }
 }

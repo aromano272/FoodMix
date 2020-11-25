@@ -34,7 +34,6 @@ class SelectedIngredientsAdapter(
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(ingredient: Ingredient) = with (containerView) {
             iv_image.load(ingredient.imageUrl)
-            tv_name.text = ingredient.name
 
             setOnClickListener {
                 removeIngredientClicked(ingredient)
