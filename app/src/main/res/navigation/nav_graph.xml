@@ -19,6 +19,11 @@
             app:destination="@+id/categoryRecipes"
             />
 
+        <action
+            android:id="@+id/action_recipes_to_searchRecipesByIngredients"
+            app:destination="@+id/searchRecipesByIngredients"
+            />
+
     </fragment>
 
     <fragment
@@ -52,6 +57,26 @@
             android:name="recipe"
             app:argType="com.andreromano.foodmix.domain.model.Recipe"
             app:nullable="false"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchRecipesByIngredients"
+        android:name="com.andreromano.foodmix.ui.search_recipes_by_ingredients.SearchRecipesByIngredientsFragment"
+        android:label="Search Recipes by Ingredients"
+        tools:layout="@layout/search_recipes_by_ingredient_fragment"
+        >
+
+        <argument
+            android:name="ingredients"
+            app:argType="com.andreromano.foodmix.domain.model.Ingredient[]"
+            app:nullable="false"
+            />
+
+        <action
+            android:id="@+id/action_searchRecipesByIngredients_to_recipeDetails"
+            app:destination="@+id/recipeDetails"
             />
 
     </fragment>

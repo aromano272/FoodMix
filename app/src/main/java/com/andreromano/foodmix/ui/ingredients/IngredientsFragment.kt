@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
@@ -18,6 +19,7 @@ import com.andreromano.foodmix.extensions.setTextWithoutWatcher
 import com.andreromano.foodmix.extensions.toVisibility
 import com.andreromano.foodmix.ui.mapper.errorMessage
 import com.andreromano.foodmix.ui.mapper.string
+import com.andreromano.foodmix.ui.recipes.RecipesFragmentDirections
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.ingredients_fragment.*
@@ -71,8 +73,8 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
 
         rv_selected_ingredients.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rv_selected_ingredients.adapter = selectedIngredientsAdapter
-//        rv_selected_ingredients.isNestedScrollingEnabled = false
 
+        // The viewpager was intercepting the scroll event
         rv_selected_ingredients.addOnItemTouchListener(object : OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 val action = e.action
@@ -97,7 +99,8 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
 
         viewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             when (it) {
-                is IngredientsContract.ViewInstruction.NavigateToSearchRecipesByIngredients -> TODO()
+                is IngredientsContract.ViewInstruction.NavigateToSearchRecipesByIngredients ->
+                    findNavController().navigate(RecipesFragmentDirections.actionRecipesToSearchRecipesByIngredients(it.ingredients.toTypedArray()))
             }
         })
         viewModel.error.observe(viewLifecycleOwner, EventObserver {

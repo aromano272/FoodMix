@@ -5,6 +5,7 @@ import com.andreromano.foodmix.core.*
 import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.domain.model.IngredientType
+import com.andreromano.foodmix.extensions.launch
 import com.andreromano.foodmix.ui.mapper.toListState
 import com.andreromano.foodmix.ui.model.ListState
 import kotlinx.coroutines.flow.*
@@ -53,8 +54,8 @@ class IngredientsViewModel(
         _searchQueryInput.value = query
     }
 
-    override fun findRecipesClicked() {
-        _navigation.tryEmit(IngredientsContract.ViewInstruction.NavigateToSearchRecipesByIngredients(_selectedIngredients.value))
+    override fun findRecipesClicked() = launch {
+        _navigation.emit(IngredientsContract.ViewInstruction.NavigateToSearchRecipesByIngredients(_selectedIngredients.value))
     }
 
     override fun ingredientClicked(ingredient: Ingredient) {

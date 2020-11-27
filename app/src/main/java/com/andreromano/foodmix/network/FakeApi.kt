@@ -1,7 +1,10 @@
 package com.andreromano.foodmix.network
 
 import com.andreromano.foodmix.core.*
-import com.andreromano.foodmix.domain.model.*
+import com.andreromano.foodmix.domain.model.Ingredient
+import com.andreromano.foodmix.domain.model.Recipe
+import com.andreromano.foodmix.domain.model.RecipesOrderBy
+import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.network.FakeData.categories
 import com.andreromano.foodmix.network.FakeData.recipes
 import com.andreromano.foodmix.network.FakeData.reviews
@@ -45,5 +48,22 @@ class FakeApi : Api {
 
     override suspend fun removeFavorite(recipeId: RecipeId): ResultKt<Unit> = middleware {
         ResultKt.Success(Unit)
+    }
+
+    override suspend fun searchRecipesByIngredients(
+        searchedIngredients: List<IngredientId>,
+        orderBy: RecipesOrderBy
+    ): ResultKt<List<Recipe>> = middleware {
+        ResultKt.Success(
+            recipes
+                .filter { it.ingredients.all { searchedIngredients.contains(it.id) } }
+                .let {
+                    when (orderBy) {
+                        RecipesOrderBy.RELEVANCE -> it.sortedBy { it.title }
+                        RecipesOrderBy.RATING -> it.sortedBy { it.rating }
+                        RecipesOrderBy.DURATION -> it.sortedBy { it.duration }
+                    }
+                }
+        )
     }
 }

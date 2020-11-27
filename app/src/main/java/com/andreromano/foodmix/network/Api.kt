@@ -1,17 +1,15 @@
 package com.andreromano.foodmix.network
 
 import com.andreromano.foodmix.core.CategoryId
-import com.andreromano.foodmix.domain.model.Ingredient
+import com.andreromano.foodmix.core.IngredientId
 import com.andreromano.foodmix.core.RecipeId
 import com.andreromano.foodmix.core.ResultKt
-import com.andreromano.foodmix.domain.model.Category
+import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.domain.model.Recipe
+import com.andreromano.foodmix.domain.model.RecipesOrderBy
 import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.network.model.CategoryResult
-import retrofit2.http.Field
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface Api {
 
@@ -36,4 +34,9 @@ interface Api {
     @POST("remove_favorite")
     suspend fun removeFavorite(recipeId: RecipeId): ResultKt<Unit>
 
+    @GET("search_recipes_by_ingredients")
+    suspend fun searchRecipesByIngredients(
+        @Query("ingredients") searchedIngredients: List<IngredientId>,
+        @Query("order_by") orderBy: RecipesOrderBy
+    ): ResultKt<List<Recipe>>
 }

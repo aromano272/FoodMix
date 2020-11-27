@@ -23,7 +23,7 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
         <item name="android:lineSpacingExtra">8sp</item>
-        <item name="android:textColor">#333333</item>
+        <item name="android:textColor">@color/light_bg_dark_primary_text</item>
     </style>
 
 </resources>

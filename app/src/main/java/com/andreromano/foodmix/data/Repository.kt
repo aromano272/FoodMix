@@ -74,10 +74,6 @@ class Repository(
         emit(Resource.Success(filteredResults))
     }
 
-//        categoriesDao.getAll(searchQuery.orEmpty()).map {
-//            ResultKt.Success(it.toDomain())
-//        }
-
     suspend fun getCategories(searchQuery: String? = null): ResultKt<List<Category>> {
         val cacheCategories = cacheCategories
         val result = if (cacheCategories != null) {
@@ -108,4 +104,5 @@ class Repository(
 
     suspend fun removeFavorite(recipeId: RecipeId): ResultKt<Unit> = api.removeFavorite(recipeId)
 
+    suspend fun searchRecipesByIngredients(searchedIngredients: List<Ingredient>, orderBy: RecipesOrderBy) = api.searchRecipesByIngredients(searchedIngredients.map { it.id }, orderBy)
 }

@@ -9,4 +9,10 @@ sealed class ResultKt<out T> {
         is Success -> Success(body(data))
         is Failure -> this
     }
+
+    fun toResource(): Resource<T> = when (this) {
+        is Success -> Resource.Success(this.data)
+        is Failure -> Resource.Failure(null, this.error)
+    }
+
 }
