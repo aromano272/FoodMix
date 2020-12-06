@@ -30,8 +30,14 @@ class SearchRecipesByIngredientsFragment : Fragment(R.layout.search_recipes_by_i
         )
     }
 
+    private val controller: SearchRecipesByIngredientsController by lazy {
+        SearchRecipesByIngredientsController(viewModel::recipeClicked)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        rv_recipes.setController(controller)
 
         btn_nav_back.setOnClickListener {
             viewModel.backClicked()
@@ -72,7 +78,7 @@ class SearchRecipesByIngredientsFragment : Fragment(R.layout.search_recipes_by_i
             }
         }
         viewModel.results.observe(viewLifecycleOwner) {
-            
+            controller.listState = it
         }
     }
 

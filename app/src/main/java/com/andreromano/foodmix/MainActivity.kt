@@ -1,11 +1,7 @@
 package com.andreromano.foodmix
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
-import com.andreromano.foodmix.ui.main.MainFragment
-import kotlinx.coroutines.flow.*
-import timber.log.Timber
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
