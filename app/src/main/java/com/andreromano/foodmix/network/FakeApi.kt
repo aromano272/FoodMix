@@ -6,10 +6,12 @@ import com.andreromano.foodmix.domain.model.Recipe
 import com.andreromano.foodmix.domain.model.RecipesOrderBy
 import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.network.FakeData.categories
+import com.andreromano.foodmix.network.FakeData.ingredients
 import com.andreromano.foodmix.network.FakeData.recipes
 import com.andreromano.foodmix.network.FakeData.reviews
 import com.andreromano.foodmix.network.FakeData.shouldFail
 import com.andreromano.foodmix.network.model.CategoryResult
+import com.andreromano.foodmix.network.model.IngredientResult
 import kotlinx.coroutines.delay
 
 class FakeApi : Api {
@@ -20,8 +22,12 @@ class FakeApi : Api {
         else continuation()
     }
 
-    override suspend fun getCategories(): ResultKt<List<CategoryResult>> = middleware {
-        ResultKt.Success(categories)
+    override suspend fun getCategories(searchQuery: String?): ResultKt<List<CategoryResult>> = middleware {
+        ResultKt.Success(categories.filter { if (searchQuery != null) it.name.startsWith(searchQuery, true) else true })
+    }
+
+    override suspend fun getIngredients(searchQuery: String?): ResultKt<List<IngredientResult>> = middleware {
+        ResultKt.Success(ingredients.filter { if (searchQuery != null) it.name.startsWith(searchQuery, true) else true })
     }
 
     override suspend fun getRecipesByCategory(categoryId: CategoryId): ResultKt<List<Recipe>> = middleware {

@@ -58,9 +58,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.2.0"
-
     implementation "com.jakewharton.timber:timber:4.7.1"
 
     implementation "net.danlew:android.joda:2.10.2"
@@ -69,13 +66,7 @@ dependencies {
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.0'
     implementation "io.coil-kt:coil:1.0.0"
     implementation 'de.hdodenhof:circleimageview:3.0.1'
-
-
-    // RxJava
-    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
-    implementation "io.reactivex.rxjava3:rxkotlin:3.0.0"
-    implementation "io.reactivex.rxjava3:rxjava:3.0.4"
-    implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0'
@@ -105,8 +96,12 @@ dependencies {
 
     implementation "com.github.ChuckerTeam.Chucker:library:3.1.1"
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // Testing
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "junit:junit:4.13.1"
+    testImplementation("org.amshove.kluent:kluent:1.38")
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.0'
+    testImplementation "io.mockk:mockk:1.10.2"
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
 
 }

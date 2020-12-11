@@ -15,6 +15,7 @@ import com.andreromano.foodmix.core.EventObserver
 import com.andreromano.foodmix.extensions.setTextChangedListener
 import com.andreromano.foodmix.extensions.setTextWithoutWatcher
 import com.andreromano.foodmix.ui.mapper.errorMessage
+import com.andreromano.foodmix.ui.model.ListState
 import com.andreromano.foodmix.ui.recipes.RecipesFragmentDirections
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.categories_fragment.*
@@ -40,6 +41,8 @@ class CategoriesFragment : Fragment(R.layout.categories_fragment) {
         rv_categories.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         rv_categories.setControllerAndBuildModels(controller)
 
+        swipe_refresh.isEnabled = false
+
         et_search.setTextChangedListener {
             viewModel.searchQueryInputChanged(it.toString())
         }
@@ -59,6 +62,7 @@ class CategoriesFragment : Fragment(R.layout.categories_fragment) {
 
         viewModel.categories.observe(viewLifecycleOwner, Observer {
             controller.listState = it
+            swipe_refresh.isRefreshing = it is ListState.Loading
         })
 
         viewModel.error.observe(viewLifecycleOwner, EventObserver {

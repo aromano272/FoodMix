@@ -23,13 +23,12 @@ abstract class NetworkBoundResource<EntityModel : Any?, NetworkModel : Any, Doma
 
             combine(loadFromDb(), resultFlow.startWithPreEmission()) { dbValue, result ->
                 Timber.e("boomshakalaka combine $dbValue, $result")
-                when {
-                    result is CombineResult.ToBeEmitted -> Resource.Loading(mapToDomainInternal(dbValue))
-                    result is CombineResult.Emission -> when (result.data) {
+                when (result) {
+                    is CombineResult.ToBeEmitted -> Resource.Loading(mapToDomainInternal(dbValue))
+                    is CombineResult.Emission -> when (result.data) {
                         is ResultKt.Success -> if (dbValue != null) Resource.Success(mapToDomain(dbValue)) else Resource.Failure(null, ErrorKt.NotFound)
                         is ResultKt.Failure -> Resource.Failure(mapToDomainInternal(dbValue), result.data.error)
                     }
-                    else -> throw IllegalStateException()
                 }
             }
         } else {
@@ -48,7 +47,7 @@ abstract class NetworkBoundResource<EntityModel : Any?, NetworkModel : Any, Doma
 
     protected abstract suspend fun saveCallResult(result: NetworkModel)
 
-    protected abstract fun loadFromDb(): Flow<EntityModel>
+    protected abstract suspend fun loadFromDb(): Flow<EntityModel>
 
     protected open suspend fun shouldFetch(data: EntityModel): Boolean = when (fetchStrategy) {
         FetchStrategy.ALWAYS -> true

@@ -9,6 +9,7 @@ import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.domain.model.Recipe
 import com.andreromano.foodmix.domain.model.RecipesOrderBy
 import com.andreromano.foodmix.extensions.launch
+import com.andreromano.foodmix.extensions.shareHere
 import com.andreromano.foodmix.ui.mapper.toListState
 import com.andreromano.foodmix.ui.model.ListState
 import kotlinx.coroutines.flow.*
@@ -27,7 +28,7 @@ class SearchRecipesByIngredientsViewModel(
     private val searchResult: SharedFlow<Resource<List<Recipe>>> = _orderBy.transformLatest { orderBy ->
         emit(Resource.Loading(null))
         emit(repository.searchRecipesByIngredients(searchedIngredients, orderBy).toResource())
-    }.shareIn(viewModelScope, SharingStarted.Lazily)
+    }.shareHere(this)
 
     override val searchDetailsInfo: LiveData<SearchRecipesByIngredientsContract.ViewState.SearchDetailsInfo?> =
         searchResult

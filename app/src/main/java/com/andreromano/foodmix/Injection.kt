@@ -20,6 +20,7 @@ object Injection {
     fun provideRepository(context: Context) = repository ?: Repository(
         provideApi(),
         provideAppDatabase(context).categoriesDao(),
+        provideAppDatabase(context).ingredientsDao(),
         provideTransactionRunner(context)
     ).also {
         repository = it
@@ -39,9 +40,11 @@ object Injection {
 
     private var appDatabase: AppDatabase? = null
     fun provideAppDatabase(context: Context): AppDatabase =
-        appDatabase ?: Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "foodmix").build().also {
-            appDatabase = it
-        }
+        appDatabase ?: Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "foodmix")
+            .fallbackToDestructiveMigration()
+            .build().also {
+                appDatabase = it
+            }
 
     fun provideTransactionRunner(context: Context): TransactionRunner {
         val db = provideAppDatabase(context)

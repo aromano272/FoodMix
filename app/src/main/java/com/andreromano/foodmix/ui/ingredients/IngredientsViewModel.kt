@@ -5,7 +5,9 @@ import com.andreromano.foodmix.core.*
 import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.domain.model.IngredientType
+import com.andreromano.foodmix.extensions.filterResourceFailure
 import com.andreromano.foodmix.extensions.launch
+import com.andreromano.foodmix.extensions.shareHere
 import com.andreromano.foodmix.ui.mapper.toListState
 import com.andreromano.foodmix.ui.model.ListState
 import kotlinx.coroutines.flow.*
@@ -32,14 +34,14 @@ class IngredientsViewModel(
                 Timber.e("miesmo flatMapLatest")
                 repository.getIngredients(query, type)
             }
-            .shareIn(viewModelScope, SharingStarted.Lazily)
+            .shareHere(this)
 
 
     override val ingredients: LiveData<ListState<Ingredient>> = ingredientsResult.mapLatest { it.toListState() }.asLiveData()
 
     override val error: LiveData<Event<ErrorKt>> =
         ingredientsResult
-            .filterIsInstance<Resource.Failure<*>>()
+            .filterResourceFailure()
             .mapLatest { Event(it.error) }
             .asLiveData()
 

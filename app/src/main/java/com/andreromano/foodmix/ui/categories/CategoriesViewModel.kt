@@ -4,11 +4,12 @@ import androidx.lifecycle.*
 import com.andreromano.foodmix.core.ErrorKt
 import com.andreromano.foodmix.core.Event
 import com.andreromano.foodmix.core.Resource
-import com.andreromano.foodmix.core.ResultKt
 import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.domain.model.Category
-import com.andreromano.foodmix.extensions.launch
+import com.andreromano.foodmix.extensions.asListState
+import com.andreromano.foodmix.extensions.filterResourceFailure
 import com.andreromano.foodmix.extensions.map
+import com.andreromano.foodmix.extensions.shareHere
 import com.andreromano.foodmix.ui.mapper.toListState
 import com.andreromano.foodmix.ui.model.ListState
 import kotlinx.coroutines.flow.*
@@ -24,22 +25,16 @@ class CategoriesViewModel(
     private val _searchQueryInput = MutableStateFlow("")
     override val searchQueryInput: LiveData<String> = _searchQueryInput.asLiveData()
 
-    private var flowId = 0
     private val categoriesResult: SharedFlow<Resource<List<Category>>> = _searchQueryInput.debounce(300).flatMapLatest { query ->
-        Timber.e("flatMapLatest ${++flowId}")
-        repository.getCategoriesNetworkBoundResource(query)
-    }.shareIn(viewModelScope, SharingStarted.Lazily)
+        repository.getCategories(query)
+    }.shareHere(this)
 
-    override val categories: LiveData<ListState<Category>> = categoriesResult.mapLatest { result ->
-        Timber.e("boomshakalaka categoriesFlow $flowId $result")
-        result.toListState()
-    }.asLiveData()
+    override val categories: LiveData<ListState<Category>> = categoriesResult.asListState().asLiveData()
 
     override val error: LiveData<Event<ErrorKt>> =
         categoriesResult
-            .filterIsInstance<Resource.Failure<*>>()
+            .filterResourceFailure()
             .mapLatest { Event(it.error) }
-            .onEach { Timber.e("error $flowId") }
             .asLiveData()
 
     override fun searchQueryInputChanged(query: String) {

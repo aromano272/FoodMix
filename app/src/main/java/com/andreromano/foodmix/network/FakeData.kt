@@ -4,6 +4,8 @@ import com.andreromano.foodmix.domain.model.Ingredient
 import com.andreromano.foodmix.data.mapper.toDomain
 import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.network.model.CategoryResult
+import com.andreromano.foodmix.network.model.IngredientResult
+import com.andreromano.foodmix.network.model.IngredientTypeResult
 import kotlinx.coroutines.runBlocking
 import java.util.*
 import kotlin.math.absoluteValue
@@ -51,12 +53,12 @@ object FakeData {
         return directions.filterIndexed { index, _ -> index == randomNumber1 || index == randomNumber2 || index == randomNumber3 }
     }
 
-    val ingredients: List<Ingredient> = (0..10).map {
+    val ingredients: List<IngredientResult> = (0..10).map {
         val randomNumber = (rng.nextDouble() * IngredientType.values().size).toInt()
-        Ingredient(id, "ingredients $id", imageUrl, IngredientType.values()[randomNumber])
+        IngredientResult(id, "ingredients $id", imageUrl, IngredientTypeResult.values()[randomNumber])
     }
 
-    private fun generateRandomIngredients(): List<Ingredient> {
+    private fun generateRandomIngredients(): List<IngredientResult> {
         val randomNumber1 = (rng.nextDouble() * ingredients.size).toInt()
         val randomNumber2 = (rng.nextDouble() * ingredients.size).toInt()
         val randomNumber3 = (rng.nextDouble() * ingredients.size).toInt()
@@ -100,8 +102,8 @@ object FakeData {
             (rng.nextDouble() * 1000).roundToInt(),
             (rng.nextDouble() * 6).roundToInt(),
             (rng.nextDouble() * 100).roundToInt(),
-            runBlocking { generateRandomCategories().toDomain() }, // todo: remove run blocking or make this whole thing suspend
-            generateRandomIngredients(),
+            runBlocking { generateRandomCategories().map { it.toDomain() } }, // todo: remove run blocking or make this whole thing suspend
+            runBlocking { generateRandomIngredients().map { it.toDomain() } },
             generateRandomDirections(),
             generateRandomReviews()
         )

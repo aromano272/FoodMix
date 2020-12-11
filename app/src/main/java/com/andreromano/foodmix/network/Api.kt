@@ -9,12 +9,16 @@ import com.andreromano.foodmix.domain.model.Recipe
 import com.andreromano.foodmix.domain.model.RecipesOrderBy
 import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.network.model.CategoryResult
+import com.andreromano.foodmix.network.model.IngredientResult
 import retrofit2.http.*
 
 interface Api {
 
     @GET("2afb42e8-3681-42cf-aad7-8c214171ecf1")
-    suspend fun getCategories(): ResultKt<List<CategoryResult>>
+    suspend fun getCategories(@Query("searchQuery") searchQuery: String?): ResultKt<List<CategoryResult>>
+
+    @GET("ingredients")
+    suspend fun getIngredients(@Query("searchQuery") searchQuery: String?): ResultKt<List<IngredientResult>>
 
     @GET("recipe/category/{categoryId}")
     suspend fun getRecipesByCategory(@Path("categoryId") categoryId: CategoryId): ResultKt<List<Recipe>>

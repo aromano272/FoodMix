@@ -5,92 +5,43 @@ import com.andreromano.foodmix.data.mapper.toDomain
 import com.andreromano.foodmix.data.mapper.toEntity
 import com.andreromano.foodmix.database.TransactionRunner
 import com.andreromano.foodmix.database.dao.CategoriesDao
+import com.andreromano.foodmix.database.dao.IngredientsDao
 import com.andreromano.foodmix.database.model.CategoryEntity
+import com.andreromano.foodmix.database.model.IngredientEntity
 import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.network.Api
-import com.andreromano.foodmix.network.FakeData
 import com.andreromano.foodmix.network.model.CategoryResult
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import com.andreromano.foodmix.network.model.IngredientResult
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class Repository(
     private val api: Api,
     private val categoriesDao: CategoriesDao,
+    private val ingredientsDao: IngredientsDao,
     private val transactionRunner: TransactionRunner
 ) {
 
-    private var cacheCategories: List<Category>? = null
-
-    private suspend fun saveCacheCategories(categories: List<Category>) {
-        delay(100)
-        cacheCategories = categories
-    }
-
-    fun getCategoriesFlow(searchQuery: String? = null): Flow<Resource<List<Category>>> = flow {
-        emit(Resource.Loading(null))
-        Timber.e("emit 1")
-        val dbValue = categoriesDao.getAll(searchQuery.orEmpty()).first()
-        emit(Resource.Loading(dbValue.toDomain()))
-        Timber.e("emit 2")
-
-        when (val result = api.getCategories()) {
-            is ResultKt.Success -> {
-                // save call result
-                categoriesDao.upsert(result.data.toEntity())
-                // observe database
-                Timber.e("emit 3")
-                emitAll(categoriesDao.getAll(searchQuery.orEmpty()).map { Resource.Success(it.toDomain()) })
-            }
-            is ResultKt.Failure -> {
-                // observe database with Failure map
-                Timber.e("emit 3")
-                emitAll(categoriesDao.getAll(searchQuery.orEmpty()).map { Resource.Failure(it.toDomain(), result.error) })
-            }
-        }
-    }
-
-    fun getCategoriesNetworkBoundResource(searchQuery: String? = null): Flow<Resource<List<Category>>> =
+    fun getCategories(searchQuery: String? = null): Flow<Resource<List<Category>>> =
         object : NetworkBoundResource<List<CategoryEntity>, List<CategoryResult>, List<Category>>() {
-            override suspend fun saveCallResult(result: List<CategoryResult>) = categoriesDao.replaceAll(result.toEntity())
+            override suspend fun saveCallResult(result: List<CategoryResult>) = categoriesDao.replaceAll(result.map { it.toEntity() })
 
-            override fun loadFromDb(): Flow<List<CategoryEntity>> = categoriesDao.getAll(searchQuery.orEmpty())
+            override suspend fun loadFromDb(): Flow<List<CategoryEntity>> = categoriesDao.getAll(searchQuery.orEmpty())
 
-            override suspend fun mapToDomain(entity: List<CategoryEntity>): List<Category> = entity.toDomain()
+            override suspend fun mapToDomain(entity: List<CategoryEntity>): List<Category> = entity.map { it.toDomain() }
 
-            override suspend fun createCall(): ResultKt<List<CategoryResult>> = api.getCategories()
+            override suspend fun createCall(): ResultKt<List<CategoryResult>> = api.getCategories(searchQuery)
         }.asFlow()
 
-    fun getIngredients(searchQuery: String? = null, ingredientTypeFilter: IngredientType? = null): Flow<Resource<List<Ingredient>>> = flow {
-        emit(Resource.Loading(null))
-        delay(1000)
-        val filteredResults = FakeData.ingredients.filter {
-            val matchesSearchQuery = if (searchQuery != null) it.name.startsWith(searchQuery, true) else true
-            val matchesIngredientTypeFilter = if (ingredientTypeFilter != null) it.type == ingredientTypeFilter else true
-            matchesSearchQuery && matchesIngredientTypeFilter
-        }
-        emit(Resource.Success(filteredResults))
-    }
+    fun getIngredients(searchQuery: String? = null, ingredientTypeFilter: IngredientType? = null): Flow<Resource<List<Ingredient>>> =
+        object : NetworkBoundResource<List<IngredientEntity>, List<IngredientResult>, List<Ingredient>>() {
+            override suspend fun saveCallResult(result: List<IngredientResult>) = ingredientsDao.replaceAll(result.map { it.toEntity() })
 
-    suspend fun getCategories(searchQuery: String? = null): ResultKt<List<Category>> {
-        val cacheCategories = cacheCategories
-        val result = if (cacheCategories != null) {
-            ResultKt.Success(cacheCategories)
-        } else {
-            val result = api.getCategories().mapData { it.toDomain() }
-            if (result is ResultKt.Success) saveCacheCategories(result.data)
-            result
-        }
+            override suspend fun loadFromDb(): Flow<List<IngredientEntity>> = ingredientsDao.getAll(searchQuery.orEmpty(), ingredientTypeFilter?.toEntity())
 
-        return result.mapData {
-            if (searchQuery.isNullOrEmpty()) return@mapData it
-            withContext(Dispatchers.Default) {
-                it.filter { it.name.startsWith(searchQuery) }
-            }
-        }
-    }
+            override suspend fun mapToDomain(entity: List<IngredientEntity>): List<Ingredient> = entity.map { it.toDomain() }
+
+            override suspend fun createCall(): ResultKt<List<IngredientResult>> = api.getIngredients(searchQuery)
+        }.asFlow()
 
     suspend fun getRecipes(category: Category): ResultKt<List<Recipe>> = api.getRecipesByCategory(category.id)
 

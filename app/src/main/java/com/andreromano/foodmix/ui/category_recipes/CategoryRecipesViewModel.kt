@@ -18,7 +18,7 @@ class CategoryRecipesViewModel(
     private val _navigation = MutableLiveData<CategoryRecipesContract.ViewInstruction>()
     override val navigation: LiveData<Event<CategoryRecipesContract.ViewInstruction>> = _navigation.map { Event(it) }
 
-    private val _recipes = MutableLiveData<ListState<Recipe>>(ListState.Loading)
+    private val _recipes = MutableLiveData<ListState<Recipe>>(ListState.Loading(null))
     override val recipes: LiveData<ListState<Recipe>> = _recipes
 
     init {

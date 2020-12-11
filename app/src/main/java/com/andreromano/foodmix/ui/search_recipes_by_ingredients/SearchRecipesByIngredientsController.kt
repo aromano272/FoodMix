@@ -16,13 +16,13 @@ class SearchRecipesByIngredientsController(
     EpoxyAsyncUtil.getAsyncBackgroundHandler()
 ) {
 
-    var listState: ListState<Recipe> by EpoxyModelProperty { ListState.Loading }
+    var listState: ListState<Recipe> by EpoxyModelProperty { ListState.Loading(null) }
 
     override fun buildModels() {
         val listState = listState
 
         when (listState) {
-            ListState.Loading -> epoxyTextView {
+            is ListState.Loading -> epoxyTextView {
                 id("loading")
                 title("loading")
             }
