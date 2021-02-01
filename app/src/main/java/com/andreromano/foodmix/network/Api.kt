@@ -10,6 +10,7 @@ import com.andreromano.foodmix.domain.model.RecipesOrderBy
 import com.andreromano.foodmix.domain.model.Review
 import com.andreromano.foodmix.network.model.CategoryResult
 import com.andreromano.foodmix.network.model.IngredientResult
+import com.andreromano.foodmix.network.model.UserProfileResult
 import retrofit2.http.*
 
 interface Api {
@@ -43,4 +44,8 @@ interface Api {
         @Query("ingredients") searchedIngredients: List<IngredientId>,
         @Query("order_by") orderBy: RecipesOrderBy
     ): ResultKt<List<Recipe>>
+
+    @GET("user_profile")
+    suspend fun getUserProfile(): ResultKt<UserProfileResult>
+
 }

@@ -10,8 +10,10 @@ import com.andreromano.foodmix.network.FakeData.ingredients
 import com.andreromano.foodmix.network.FakeData.recipes
 import com.andreromano.foodmix.network.FakeData.reviews
 import com.andreromano.foodmix.network.FakeData.shouldFail
+import com.andreromano.foodmix.network.FakeData.userProfile
 import com.andreromano.foodmix.network.model.CategoryResult
 import com.andreromano.foodmix.network.model.IngredientResult
+import com.andreromano.foodmix.network.model.UserProfileResult
 import kotlinx.coroutines.delay
 
 class FakeApi : Api {
@@ -72,4 +74,9 @@ class FakeApi : Api {
                 }
         )
     }
+
+    override suspend fun getUserProfile(): ResultKt<UserProfileResult> = middleware {
+        ResultKt.Success(userProfile)
+    }
+
 }

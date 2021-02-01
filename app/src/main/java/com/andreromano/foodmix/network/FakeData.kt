@@ -6,6 +6,7 @@ import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.network.model.CategoryResult
 import com.andreromano.foodmix.network.model.IngredientResult
 import com.andreromano.foodmix.network.model.IngredientTypeResult
+import com.andreromano.foodmix.network.model.UserProfileResult
 import kotlinx.coroutines.runBlocking
 import java.util.*
 import kotlin.math.absoluteValue
@@ -112,6 +113,19 @@ object FakeData {
     val recipes = (0..100).map {
         generateRandomRecipe()
     }
+
+    val userProfile: UserProfileResult = UserProfileResult(
+        id = "1",
+        username = "username",
+        description = "some description lorem ipsum dolore mais cenas que nao me lembro",
+        avatarUrl = imageUrl,
+        backgroundUrl = imageUrl,
+        totalRecipesCount = 23,
+        totalCookbooks = 2,
+        myRecipesCount = 12,
+        myCookbooksCount = 1,
+        shoppingListCount = 17
+    )
 
     var shouldFail: Boolean = false
 

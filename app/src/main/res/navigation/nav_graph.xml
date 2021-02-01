@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/recipes"
+    app:startDestination="@id/account"
     >
 
     <fragment
@@ -78,6 +78,15 @@
             android:id="@+id/action_searchRecipesByIngredients_to_recipeDetails"
             app:destination="@+id/recipeDetails"
             />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/account"
+        android:name="com.andreromano.foodmix.ui.account.AccountFragment"
+        android:label="Account"
+        tools:layout="@layout/account_fragment"
+        >
 
     </fragment>
 

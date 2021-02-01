@@ -6,6 +6,8 @@
 
     <color name="black12">#1E000000</color>
     <color name="black30">#4D000000</color>
+    <color name="black50">#80000000</color>
+    <color name="white30">#4DFFFFFF</color>
     <color name="divider">@color/black12</color>
 
     <color name="transparent">#00000000</color>

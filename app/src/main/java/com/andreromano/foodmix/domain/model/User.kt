@@ -9,5 +9,5 @@ import kotlinx.android.parcel.Parcelize
 data class User(
     val id: UserId,
     val username: String,
-    val avatarUrl: String
+    val avatarUrl: String,
 ) : Parcelable

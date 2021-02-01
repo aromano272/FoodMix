@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import androidx.room.Room
 import androidx.room.withTransaction
 import com.andreromano.foodmix.data.Repository
+import com.andreromano.foodmix.data.UserProfileRepository
 import com.andreromano.foodmix.database.AppDatabase
 import com.andreromano.foodmix.database.TransactionRunner
 import com.andreromano.foodmix.network.Api
@@ -24,6 +25,14 @@ object Injection {
         provideTransactionRunner(context)
     ).also {
         repository = it
+    }
+
+    private var userProfileRepository: UserProfileRepository? = null
+    fun provideUserProfileRepository(context: Context) = userProfileRepository ?: UserProfileRepository(
+        provideApi(),
+        provideAppDatabase(context).userProfileDao()
+    ).also {
+        userProfileRepository = it
     }
 
     private var api: Api? = null
