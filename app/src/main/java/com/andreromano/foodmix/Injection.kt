@@ -8,10 +8,9 @@ import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.data.UserProfileRepository
 import com.andreromano.foodmix.database.AppDatabase
 import com.andreromano.foodmix.database.TransactionRunner
-import com.andreromano.foodmix.network.Api
-import com.andreromano.foodmix.network.FakeApi
-import com.andreromano.foodmix.network.FromBaseResponseToResultKtAdapterFactory
-import com.andreromano.foodmix.network.ServiceGenerator
+import com.andreromano.foodmix.network.*
+import com.andreromano.foodmix.network.mapper.FixImageUrlForEmulatorAdapter
+import com.andreromano.foodmix.network.mapper.FromBaseResponseToResultKtAdapterFactory
 import com.andreromano.foodmix.ui.utils.NetworkUtils
 import com.squareup.moshi.Moshi
 
@@ -19,9 +18,10 @@ object Injection {
 
     private var repository: Repository? = null
     fun provideRepository(context: Context) = repository ?: Repository(
-        provideApi(),
+        provideApiService(),
         provideAppDatabase(context).categoriesDao(),
         provideAppDatabase(context).ingredientsDao(),
+        provideAppDatabase(context).ingredientTypesDao(),
         provideTransactionRunner(context)
     ).also {
         repository = it
@@ -29,20 +29,26 @@ object Injection {
 
     private var userProfileRepository: UserProfileRepository? = null
     fun provideUserProfileRepository(context: Context) = userProfileRepository ?: UserProfileRepository(
-        provideApi(),
+        provideApiService(),
         provideAppDatabase(context).userProfileDao()
     ).also {
         userProfileRepository = it
     }
 
+    private var apiService: ApiService? = null
+    fun provideApiService(): ApiService = apiService ?: ApiService(provideApi()).also {
+        apiService = it
+    }
+
     private var api: Api? = null
-    fun provideApi(): Api = FakeApi() ?: ServiceGenerator(provideMoshi()).createService(Api::class.java).also {
+    private fun provideApi(): Api = /*FakeApi() ?:*/ ServiceGenerator(provideMoshi()).createService(Api::class.java).also {
         api = it
     }
 
     private var moshi: Moshi? = null
     fun provideMoshi(): Moshi = moshi ?: Moshi.Builder()
         .add(FromBaseResponseToResultKtAdapterFactory())
+        .add(FixImageUrlForEmulatorAdapter())
         .build().also {
             moshi = it
         }

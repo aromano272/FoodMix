@@ -1,4 +1,4 @@
-package com.andreromano.foodmix.network
+package com.andreromano.foodmix.network.mapper
 
 import com.andreromano.foodmix.core.ResultKt
 import com.andreromano.foodmix.core.ResultKt.Success

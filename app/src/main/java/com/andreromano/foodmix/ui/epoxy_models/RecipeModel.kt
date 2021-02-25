@@ -31,7 +31,7 @@ abstract class RecipeModel : EpoxyModelWithHolder<RecipeModel.Holder>() {
         iv_image.load(recipe.imageUrl)
         tv_title.text = recipe.title
         tv_rating_count.text = "${recipe.ratingsCount}"
-        tv_duration.text = "${recipe.duration} min"
+        tv_duration.text = "${recipe.cookingTime} min"
         tv_calories.text = "${recipe.calories} kcal"
 
         rb_rating.rating = recipe.rating.toFloat()

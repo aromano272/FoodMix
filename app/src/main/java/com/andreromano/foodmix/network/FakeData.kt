@@ -1,13 +1,7 @@
 package com.andreromano.foodmix.network
 
-import com.andreromano.foodmix.domain.model.Ingredient
-import com.andreromano.foodmix.data.mapper.toDomain
-import com.andreromano.foodmix.domain.model.*
-import com.andreromano.foodmix.network.model.CategoryResult
-import com.andreromano.foodmix.network.model.IngredientResult
-import com.andreromano.foodmix.network.model.IngredientTypeResult
-import com.andreromano.foodmix.network.model.UserProfileResult
-import kotlinx.coroutines.runBlocking
+import com.andreromano.foodmix.domain.model.IngredientType
+import com.andreromano.foodmix.network.model.*
 import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
@@ -23,7 +17,7 @@ object FakeData {
     private val rng = Random(1)
 
     private val id
-        get() = rng.nextLong().absoluteValue.toString()
+        get() = rng.nextLong().absoluteValue.toInt()
 
     private val imageUrl
         get() = "https://picsum.photos/200/300?id=${Random().nextInt()}"
@@ -42,11 +36,15 @@ object FakeData {
         return categories.filterIndexed { index, _ -> index == randomNumber1 || index == randomNumber2 || index == randomNumber3 }
     }
 
-    val directions: List<Direction> = (0..8).map {
-        Direction("title $id", "description $id", imageUrl)
+    val ingredientTypes: List<String> = (0..20).map {
+        "Type $id"
     }
 
-    private fun generateRandomDirections(): List<Direction> {
+    val directions: List<DirectionResult> = (0..8).map {
+        it.let { id -> DirectionResult(id, "title $id", "description $id", imageUrl) }
+    }
+
+    private fun generateRandomDirections(): List<DirectionResult> {
         val randomNumber1 = (rng.nextDouble() * directions.size).toInt()
         val randomNumber2 = (rng.nextDouble() * directions.size).toInt()
         val randomNumber3 = (rng.nextDouble() * directions.size).toInt()
@@ -55,8 +53,8 @@ object FakeData {
     }
 
     val ingredients: List<IngredientResult> = (0..10).map {
-        val randomNumber = (rng.nextDouble() * IngredientType.values().size).toInt()
-        IngredientResult(id, "ingredients $id", imageUrl, IngredientTypeResult.values()[randomNumber])
+        val randomNumber = (rng.nextDouble() * ingredientTypes.size).toInt()
+        IngredientResult(id, "ingredients $id", imageUrl, ingredientTypes[randomNumber])
     }
 
     private fun generateRandomIngredients(): List<IngredientResult> {
@@ -68,21 +66,21 @@ object FakeData {
         return ingredients.filterIndexed { index, _ -> index == randomNumber1 || index == randomNumber2 || index == randomNumber3 || index == randomNumber4 }
     }
 
-    val users: List<User> = (0..8).map {
-        User(id, "username $id", imageUrl)
+    val users: List<UserResult> = (0..8).map {
+        UserResult(id, "username $id", imageUrl)
     }
 
-    private fun generateRandomUser(): User {
+    private fun generateRandomUser(): UserResult {
         val randomNumber1 = (rng.nextDouble() * users.size).toInt()
 
         return users.filterIndexed { index, _ -> index == randomNumber1 }.first()
     }
 
-    val reviews: List<Review> = (0..10).map {
-        Review(id, generateRandomUser(), "comment $id", System.currentTimeMillis(), (rng.nextDouble() * 100).toInt(), rng.nextBoolean() && rng.nextBoolean())
+    val reviews: List<ReviewResult> = (0..10).map {
+        ReviewResult(id, generateRandomUser(), "comment $id", System.currentTimeMillis(), (rng.nextDouble() * 100).toInt(), rng.nextBoolean() && rng.nextBoolean())
     }
 
-    private fun generateRandomReviews(): List<Review> {
+    private fun generateRandomReviews(): List<ReviewResult> {
         val randomNumber1 = (rng.nextDouble() * reviews.size).toInt()
         val randomNumber2 = (rng.nextDouble() * reviews.size).toInt()
         val randomNumber3 = (rng.nextDouble() * reviews.size).toInt()
@@ -91,8 +89,8 @@ object FakeData {
         return reviews.filterIndexed { index, _ -> index == randomNumber1 || index == randomNumber2 || index == randomNumber3 || index == randomNumber4 }
     }
 
-    private fun generateRandomRecipe(): Recipe = id.let {
-        Recipe(
+    private fun generateRandomRecipe(): RecipeResult = id.let {
+        RecipeResult(
             id,
             "Title $id",
             "Description $id",
@@ -103,8 +101,8 @@ object FakeData {
             (rng.nextDouble() * 1000).roundToInt(),
             (rng.nextDouble() * 6).roundToInt(),
             (rng.nextDouble() * 100).roundToInt(),
-            runBlocking { generateRandomCategories().map { it.toDomain() } }, // todo: remove run blocking or make this whole thing suspend
-            runBlocking { generateRandomIngredients().map { it.toDomain() } },
+            generateRandomCategories(),
+            generateRandomIngredients(),
             generateRandomDirections(),
             generateRandomReviews()
         )
@@ -115,7 +113,7 @@ object FakeData {
     }
 
     val userProfile: UserProfileResult = UserProfileResult(
-        id = "1",
+        id = 1,
         username = "username",
         description = "some description lorem ipsum dolore mais cenas que nao me lembro",
         avatarUrl = imageUrl,

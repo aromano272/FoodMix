@@ -17,6 +17,7 @@ interface IngredientsContract {
 
         val searchQueryInput: LiveData<String>
         val selectedIngredientType: LiveData<IngredientType?>
+        val ingredientTypes: LiveData<List<IngredientType>>
         val ingredients: LiveData<ListState<Ingredient>>
         val selectedIngredients: LiveData<List<Ingredient>>
     }

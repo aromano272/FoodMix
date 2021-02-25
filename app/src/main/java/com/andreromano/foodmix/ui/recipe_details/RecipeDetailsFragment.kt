@@ -3,7 +3,6 @@ package com.andreromano.foodmix.ui.recipe_details
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -104,7 +103,7 @@ class RecipeDetailsFragment : Fragment(R.layout.recipe_details_fragment) {
         viewModel.reviewsCount.observe(viewLifecycleOwner, {
             tv_rating_count.text = "$it reviews"
         })
-        viewModel.duration.observe(viewLifecycleOwner, {
+        viewModel.cookingTime.observe(viewLifecycleOwner, {
             tv_duration.text = "$it min"
         })
         viewModel.calories.observe(viewLifecycleOwner, {

@@ -1,6 +1,8 @@
 package com.andreromano.foodmix.network
 
 
+import android.os.Build
+import com.andreromano.foodmix.network.mapper.ResultKtCallAdapterFactory
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,7 +22,8 @@ class ServiceGenerator(
 
     private val retrofitBuilder by lazy {
         Retrofit.Builder()
-            .baseUrl("https://run.mocky.io/v3/")
+//            .baseUrl("https://run.mocky.io/v3/")
+            .baseUrl(if (Build.FINGERPRINT.contains("generic")) "http://10.0.2.2:8080/" else "http://127.0.0.1:8080/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .addCallAdapterFactory(ResultKtCallAdapterFactory())
@@ -37,7 +40,7 @@ class ServiceGenerator(
                     Timber.tag("OkHttp").d(message)
                 }
             }).apply {
-                level = HttpLoggingInterceptor.Level.BASIC
+                level = HttpLoggingInterceptor.Level.BODY
             }
         )
 

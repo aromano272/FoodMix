@@ -18,7 +18,6 @@ import com.andreromano.foodmix.extensions.setTextChangedListener
 import com.andreromano.foodmix.extensions.setTextWithoutWatcher
 import com.andreromano.foodmix.extensions.toVisibility
 import com.andreromano.foodmix.ui.mapper.errorMessage
-import com.andreromano.foodmix.ui.mapper.string
 import com.andreromano.foodmix.ui.recipes.RecipesFragmentDirections
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -44,24 +43,7 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val ingredientTypesToViewId: Map<IngredientType?, Int> =
-            (listOf<IngredientType?>(null) + IngredientType.values().toList()).map { ingredientType ->
-                ingredientType to View.generateViewId()
-            }.toMap()
-
-        cg_ingredient_types.removeAllViews()
-        ingredientTypesToViewId.forEach { (ingredientType, viewId) ->
-            val chip = layoutInflater.inflate(R.layout.item_ingredient_type_chip, cg_ingredient_types, false) as Chip
-            chip.id = viewId
-            chip.text = ingredientType?.string ?: "All"
-            chip.isChecked = ingredientType == null
-            cg_ingredient_types.addView(chip)
-        }
-
-        cg_ingredient_types.setOnCheckedChangeListener { group, checkedId ->
-            val ingredientType = ingredientTypesToViewId.filterValues { it == checkedId }.keys.first()
-            viewModel.ingredientTypeClicked(ingredientType)
-        }
+        replaceIngredientTypeViews(emptyList())
 
         rv_ingredients.layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
         rv_ingredients.setControllerAndBuildModels(ingredientsController)
@@ -113,6 +95,9 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
             val viewId = ingredientTypesToViewId.getValue(it)
             requireView().findViewById<Chip>(viewId).isChecked = true
         }
+        viewModel.ingredientTypes.observe(viewLifecycleOwner) {
+            replaceIngredientTypeViews(it)
+        }
         viewModel.ingredients.observe(viewLifecycleOwner) {
             ingredientsController.listState = it
         }
@@ -125,4 +110,28 @@ class IngredientsFragment : Fragment(R.layout.ingredients_fragment) {
             rv_ingredients.setPadding(0, 0, 0, initialRvIngredientsPaddingBottomPx + rvIngredientsPaddingPx)
         }
     }
+
+    private var ingredientTypesToViewId: Map<IngredientType?, Int> = emptyMap()
+    private fun replaceIngredientTypeViews(types: List<IngredientType>) {
+        ingredientTypesToViewId =
+            (listOf<IngredientType?>(null) + types).map { ingredientType ->
+                ingredientType to View.generateViewId()
+            }.toMap()
+
+        cg_ingredient_types.removeAllViews()
+        ingredientTypesToViewId.forEach { (ingredientType, viewId) ->
+            val chip = layoutInflater.inflate(R.layout.item_ingredient_type_chip, cg_ingredient_types, false) as Chip
+            chip.id = viewId
+            chip.text = ingredientType?.name ?: "All"
+            chip.isChecked = ingredientType == null
+            cg_ingredient_types.addView(chip)
+        }
+
+        cg_ingredient_types.setOnCheckedChangeListener { group, checkedId ->
+            val ingredientType = ingredientTypesToViewId.filterValues { it == checkedId }.keys.first()
+            viewModel.ingredientTypeClicked(ingredientType)
+        }
+
+    }
+
 }

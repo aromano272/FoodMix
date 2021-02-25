@@ -44,13 +44,13 @@ class AccountFragment : Fragment(R.layout.account_fragment) {
 
         viewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             when (it) {
-                AccountContract.ViewInstructions.NavigateToMyRecipes -> TODO()
-                AccountContract.ViewInstructions.NavigateToMyCookbooks -> TODO()
-                AccountContract.ViewInstructions.NavigateToSavedRecipes -> TODO()
-                AccountContract.ViewInstructions.NavigateToSavedCookbooks -> TODO()
-                AccountContract.ViewInstructions.NavigateToShoppingList -> TODO()
-                AccountContract.ViewInstructions.NavigateToAddRecipe -> TODO()
-                AccountContract.ViewInstructions.NavigateToCreateCookbook -> TODO()
+                AccountContract.ViewInstruction.NavigateToMyRecipes -> TODO()
+                AccountContract.ViewInstruction.NavigateToMyCookbooks -> TODO()
+                AccountContract.ViewInstruction.NavigateToSavedRecipes -> TODO()
+                AccountContract.ViewInstruction.NavigateToSavedCookbooks -> TODO()
+                AccountContract.ViewInstruction.NavigateToShoppingList -> TODO()
+                AccountContract.ViewInstruction.NavigateToCreateRecipe -> TODO()
+                AccountContract.ViewInstruction.NavigateToCreateCookbook -> TODO()
             }
         })
         viewModel.backgroundUrl.observe(viewLifecycleOwner) {

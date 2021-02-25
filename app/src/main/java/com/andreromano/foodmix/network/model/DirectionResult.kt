@@ -1,13 +1,14 @@
 package com.andreromano.foodmix.network.model
 
-import com.andreromano.foodmix.core.CategoryId
+import com.andreromano.foodmix.core.DirectionId
 import com.andreromano.foodmix.network.mapper.FixImageUrlForEmulator
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CategoryResult(
-    val id: CategoryId,
-    val name: String,
+data class DirectionResult(
+    val id: DirectionId,
+    val title: String,
+    val description: String,
     @FixImageUrlForEmulator
-    val imageUrl: String
+    val imageUrl: String?,
 )

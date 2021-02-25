@@ -1,10 +1,12 @@
 package com.andreromano.foodmix.core
 
-typealias RecipeId = String
-typealias CategoryId = String
-typealias ReviewId = String
-typealias UserId = String
-typealias IngredientId = String
+typealias RecipeId = Int
+typealias CategoryId = Int
+typealias ReviewId = Int
+typealias UserId = Int
+typealias IngredientId = Int
+typealias DirectionId = Int
+typealias IngredientTypeId = String
 
 typealias Minutes = Int
 typealias Millis = Long

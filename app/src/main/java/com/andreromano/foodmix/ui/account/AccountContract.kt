@@ -1,7 +1,6 @@
 package com.andreromano.foodmix.ui.account
 
 import androidx.lifecycle.LiveData
-import com.andreromano.foodmix.core.ErrorKt
 import com.andreromano.foodmix.core.Event
 
 interface AccountContract {
@@ -9,7 +8,7 @@ interface AccountContract {
     interface ViewModel : ViewState, ViewActions
 
     interface ViewState {
-        val navigation: LiveData<Event<ViewInstructions>>
+        val navigation: LiveData<Event<ViewInstruction>>
 
         val backgroundUrl: LiveData<String>
         val avatarUrl: LiveData<String>
@@ -32,14 +31,14 @@ interface AccountContract {
         fun createCookbookClicked()
     }
 
-    sealed class ViewInstructions {
-        object NavigateToMyRecipes : ViewInstructions()
-        object NavigateToMyCookbooks : ViewInstructions()
-        object NavigateToSavedRecipes : ViewInstructions()
-        object NavigateToSavedCookbooks : ViewInstructions()
-        object NavigateToShoppingList : ViewInstructions()
-        object NavigateToAddRecipe : ViewInstructions()
-        object NavigateToCreateCookbook : ViewInstructions()
+    sealed class ViewInstruction {
+        object NavigateToMyRecipes : ViewInstruction()
+        object NavigateToMyCookbooks : ViewInstruction()
+        object NavigateToSavedRecipes : ViewInstruction()
+        object NavigateToSavedCookbooks : ViewInstruction()
+        object NavigateToShoppingList : ViewInstruction()
+        object NavigateToCreateRecipe : ViewInstruction()
+        object NavigateToCreateCookbook : ViewInstruction()
     }
 
 }

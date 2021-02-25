@@ -29,7 +29,7 @@ interface RecipeDetailsContract {
         val description: LiveData<String>
         val rating: LiveData<Double>
         val reviewsCount: LiveData<Int>
-        val duration: LiveData<Minutes>
+        val cookingTime: LiveData<Minutes>
         val calories: LiveData<Int>
         val servings: LiveData<Int>
         val categories: LiveData<List<Category>>

@@ -26,6 +26,9 @@ class IngredientsViewModel(
     private val _selectedIngredientType = MutableStateFlow<IngredientType?>(null)
     override val selectedIngredientType: LiveData<IngredientType?> = _selectedIngredientType.asLiveData()
 
+    private val ingredientTypesResult = repository.getIngredientTypes().shareHere(this)
+    override val ingredientTypes: LiveData<List<IngredientType>> = ingredientTypesResult.mapNotNull { it.data }.asLiveData()
+
     private val ingredientsResult: SharedFlow<Resource<List<Ingredient>>> =
         _searchQueryInput
             .debounce(300)
@@ -40,8 +43,9 @@ class IngredientsViewModel(
     override val ingredients: LiveData<ListState<Ingredient>> = ingredientsResult.mapLatest { it.toListState() }.asLiveData()
 
     override val error: LiveData<Event<ErrorKt>> =
-        ingredientsResult
+        merge(ingredientsResult, ingredientTypesResult)
             .filterResourceFailure()
+            .debounce(500L)
             .mapLatest { Event(it.error) }
             .asLiveData()
 

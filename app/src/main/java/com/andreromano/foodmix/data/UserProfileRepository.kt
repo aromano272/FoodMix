@@ -7,12 +7,12 @@ import com.andreromano.foodmix.data.mapper.toEntity
 import com.andreromano.foodmix.database.dao.UserProfileDao
 import com.andreromano.foodmix.database.model.UserProfileEntity
 import com.andreromano.foodmix.domain.model.UserProfile
-import com.andreromano.foodmix.network.Api
+import com.andreromano.foodmix.network.ApiService
 import com.andreromano.foodmix.network.model.UserProfileResult
 import kotlinx.coroutines.flow.Flow
 
 class UserProfileRepository(
-    private val api: Api,
+    private val api: ApiService,
     private val userProfileDao: UserProfileDao,
 ) {
 

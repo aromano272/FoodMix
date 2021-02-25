@@ -16,8 +16,8 @@ class AccountViewModel(
     private val userProfileRepository: UserProfileRepository
 ) : ViewModel(), AccountContract.ViewModel {
 
-    private val _navigation = MutableSharedFlow<AccountContract.ViewInstructions>()
-    override val navigation: LiveData<Event<AccountContract.ViewInstructions>> = _navigation.mapLatest { Event(it) }.asLiveData()
+    private val _navigation = MutableSharedFlow<AccountContract.ViewInstruction>()
+    override val navigation: LiveData<Event<AccountContract.ViewInstruction>> = _navigation.mapLatest { Event(it) }.asLiveData()
 
     private val userProfileResult = userProfileRepository.get().shareHere(this)
     private val userProfileData = userProfileResult.mapNotNull { it.data }.shareHere(this)
@@ -41,31 +41,31 @@ class AccountViewModel(
     override val shoppingListCount: LiveData<Int> = userProfileData.mapLatest { it.shoppingListCount }.asLiveData()
 
     override fun myRecipesClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToMyRecipes)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToMyRecipes)
     }
 
     override fun myCookbooksClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToMyCookbooks)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToMyCookbooks)
     }
 
     override fun cookbooksClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToSavedCookbooks)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToSavedCookbooks)
     }
 
     override fun recipesClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToSavedRecipes)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToSavedRecipes)
     }
 
     override fun shoppingListClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToShoppingList)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToShoppingList)
     }
 
     override fun addRecipeClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToAddRecipe)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToCreateRecipe)
     }
 
     override fun createCookbookClicked() = launch {
-        _navigation.emit(AccountContract.ViewInstructions.NavigateToCreateCookbook)
+        _navigation.emit(AccountContract.ViewInstruction.NavigateToCreateCookbook)
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -1,11 +1,7 @@
 package com.andreromano.foodmix.data.mapper
 
-import com.andreromano.foodmix.domain.model.Category
-import com.andreromano.foodmix.domain.model.Ingredient
-import com.andreromano.foodmix.domain.model.IngredientType
-import com.andreromano.foodmix.network.model.CategoryResult
-import com.andreromano.foodmix.network.model.IngredientResult
-import com.andreromano.foodmix.network.model.IngredientTypeResult
+import com.andreromano.foodmix.domain.model.*
+import com.andreromano.foodmix.network.model.*
 
 
 suspend fun CategoryResult.toDomain(): Category = Category(
@@ -14,17 +10,48 @@ suspend fun CategoryResult.toDomain(): Category = Category(
     imageUrl = imageUrl
 )
 
-suspend fun IngredientTypeResult.toDomain(): IngredientType = when (this) {
-    IngredientTypeResult.MEAT -> IngredientType.MEAT
-    IngredientTypeResult.FISH -> IngredientType.FISH
-    IngredientTypeResult.VEGETABLES -> IngredientType.VEGETABLES
-    IngredientTypeResult.FRUITS -> IngredientType.FRUITS
-    IngredientTypeResult.GRAINS -> IngredientType.GRAINS
-}
-
 suspend fun IngredientResult.toDomain(): Ingredient = Ingredient(
     id = id,
     name = name,
     imageUrl = imageUrl,
-    type =  type.toDomain()
+    type =  IngredientType(type, type)
+)
+
+suspend fun DirectionResult.toDomain(): Direction = Direction(
+    id = id,
+    title = title,
+    description = description,
+    imageUrl = imageUrl
+)
+
+suspend fun UserResult.toDomain(): User = User(
+    id = id,
+    username = username,
+    avatarUrl = avatarUrl
+)
+
+suspend fun ReviewResult.toDomain(): Review = Review(
+    id = id,
+    user = user.toDomain(),
+    comment = comment,
+    timestamp = timestamp,
+    likes = likes,
+    isFavorite = isFavorite
+)
+
+suspend fun RecipeResult.toDomain(): Recipe = Recipe(
+    id = id,
+    title = title,
+    description = description,
+    isFavorite = isFavorite,
+    imageUrl = imageUrl,
+    rating = rating,
+    ratingsCount = ratingsCount,
+    calories = calories,
+    servings = servings,
+    cookingTime = cookingTime,
+    categories = categories.map { it.toDomain() },
+    ingredients = ingredients.map { it.toDomain() },
+    directions = directions.map { it.toDomain() },
+    reviews = reviews.map { it.toDomain() },
 )

@@ -4,6 +4,7 @@ import android.content.Context
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.request.CachePolicy
+import com.andreromano.foodmix.R
 
 class FoodMixImageLoaderFactory(
     private val context: Context
@@ -14,6 +15,6 @@ class FoodMixImageLoaderFactory(
 //            .diskCachePolicy(CachePolicy.DISABLED)
 //            .networkCachePolicy(CachePolicy.DISABLED)
             // TODO: Include placeholder
-//                .placeholder()
+            .fallback(R.drawable.ic_alert)
             .build()
 }

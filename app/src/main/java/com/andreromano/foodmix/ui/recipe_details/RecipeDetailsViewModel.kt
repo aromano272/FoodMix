@@ -6,9 +6,6 @@ import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.domain.model.*
 import com.andreromano.foodmix.extensions.launch
 import com.andreromano.foodmix.extensions.map
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel(
@@ -49,8 +46,8 @@ class RecipeDetailsViewModel(
     private val _reviewsCount = MutableLiveData<Int>(initialRecipe.reviews.size)
     override val reviewsCount: LiveData<Int> = _reviewsCount
 
-    private val _duration = MutableLiveData<Minutes>(initialRecipe.duration)
-    override val duration: LiveData<Minutes> = _duration
+    private val _cookingTime = MutableLiveData<Minutes>(initialRecipe.cookingTime)
+    override val cookingTime: LiveData<Minutes> = _cookingTime
 
     private val _calories = MutableLiveData<Int>(initialRecipe.calories)
     override val calories: LiveData<Int> = _calories
@@ -91,7 +88,7 @@ class RecipeDetailsViewModel(
                     _description.value = result.data.description
                     _rating.value = result.data.rating
                     _reviewsCount.value = result.data.reviews.size
-                    _duration.value = result.data.duration
+                    _cookingTime.value = result.data.cookingTime
                     _calories.value = result.data.calories
                     _servings.value = result.data.servings
                     _categories.value = result.data.categories
@@ -134,7 +131,7 @@ class RecipeDetailsViewModel(
         if (_ingredientsToBeAddedToShoppingListLoading.value?.contains(ingredient) == true) return@launch
 
         _ingredientsToBeAddedToShoppingListLoading.value = _ingredientsToBeAddedToShoppingListLoading.value?.plus(ingredient)
-        val result = repository.addIngredientToShoppingList(ingredient)
+        val result = repository.addIngredientToShoppingList(ingredient.id)
 
         when (result) {
             is ResultKt.Success -> _showAddIngredientToShoppingListSuccess.value = ingredient
