@@ -3,6 +3,7 @@ package com.andreromano.foodmix.ui.account
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import coil.load
 import com.andreromano.foodmix.Injection
 import com.andreromano.foodmix.R
@@ -49,7 +50,7 @@ class AccountFragment : Fragment(R.layout.account_fragment) {
                 AccountContract.ViewInstruction.NavigateToSavedRecipes -> TODO()
                 AccountContract.ViewInstruction.NavigateToSavedCookbooks -> TODO()
                 AccountContract.ViewInstruction.NavigateToShoppingList -> TODO()
-                AccountContract.ViewInstruction.NavigateToCreateRecipe -> TODO()
+                AccountContract.ViewInstruction.NavigateToCreateRecipe -> findNavController().navigate(AccountFragmentDirections.actionAccountToCreateRecipe())
                 AccountContract.ViewInstruction.NavigateToCreateCookbook -> TODO()
             }
         })

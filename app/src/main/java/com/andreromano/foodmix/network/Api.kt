@@ -14,7 +14,7 @@ interface Api {
     suspend fun getIngredientTypes(): ResultKt<List<String>>
 
     @GET("ingredients")
-    suspend fun getIngredients(@Query("searchQuery") searchQuery: String?): ResultKt<List<IngredientResult>>
+    suspend fun getIngredients(@Query("searchQuery") searchQuery: String? = null): ResultKt<List<IngredientResult>>
 
     @GET("recipes/category/{categoryId}")
     suspend fun getRecipesByCategory(@Path("categoryId") categoryId: CategoryId): ResultKt<List<RecipeResult>>

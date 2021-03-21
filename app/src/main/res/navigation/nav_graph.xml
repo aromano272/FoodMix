@@ -88,6 +88,20 @@
         tools:layout="@layout/account_fragment"
         >
 
+        <action
+            android:id="@+id/action_account_to_createRecipe"
+            app:destination="@+id/createRecipe"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/createRecipe"
+        android:name="com.andreromano.foodmix.ui.create_recipe.CreateRecipeFragment"
+        android:label="Create Recipe"
+        tools:layout="@layout/create_recipe_fragment"
+        >
+
     </fragment>
 
 </navigation>

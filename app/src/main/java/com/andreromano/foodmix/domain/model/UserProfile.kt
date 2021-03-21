@@ -10,8 +10,8 @@ data class UserProfile(
     val id: UserId,
     val username: String,
     val description: String,
-    val avatarUrl: String,
-    val backgroundUrl: String,
+    val avatarUrl: String?,
+    val backgroundUrl: String?,
 
     val totalRecipesCount: Int,
     val totalCookbooksCount: Int,

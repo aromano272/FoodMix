@@ -10,8 +10,8 @@ interface AccountContract {
     interface ViewState {
         val navigation: LiveData<Event<ViewInstruction>>
 
-        val backgroundUrl: LiveData<String>
-        val avatarUrl: LiveData<String>
+        val backgroundUrl: LiveData<String?>
+        val avatarUrl: LiveData<String?>
         val username: LiveData<String>
         val description: LiveData<String>
         val totalRecipesCount: LiveData<Int>

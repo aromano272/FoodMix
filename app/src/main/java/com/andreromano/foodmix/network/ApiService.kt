@@ -20,7 +20,7 @@ class ApiService(
 
     suspend fun getIngredientTypes(): ResultKt<List<String>> = api.getIngredientTypes()
 
-    suspend fun getIngredients(searchQuery: String?): ResultKt<List<IngredientResult>> = api.getIngredients(searchQuery)
+    suspend fun getIngredients(): ResultKt<List<IngredientResult>> = api.getIngredients()
 
     suspend fun getRecipesByCategory(categoryId: CategoryId): ResultKt<List<RecipeResult>> = api.getRecipesByCategory(categoryId)
 

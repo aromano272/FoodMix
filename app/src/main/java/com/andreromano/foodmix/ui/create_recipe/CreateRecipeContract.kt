@@ -6,6 +6,7 @@ import com.andreromano.foodmix.core.ErrorKt
 import com.andreromano.foodmix.core.Event
 import com.andreromano.foodmix.core.Minutes
 import com.andreromano.foodmix.domain.model.Direction
+import com.andreromano.foodmix.domain.model.Ingredient
 
 interface CreateRecipeContract {
 
@@ -15,28 +16,38 @@ interface CreateRecipeContract {
         val navigation: LiveData<Event<ViewInstruction>>
         val error: LiveData<Event<ErrorKt>>
 
+        val availableIngredientsToPickFrom: LiveData<List<Ingredient>>
+
         val nameInput: LiveData<String>
         val attachedImage: LiveData<Uri?>
         val cookingTime: LiveData<Minutes>
         val servingsCount: LiveData<Int>
         val calories: LiveData<Int>
 
-        val ingredients: LiveData<List<String>>
+        val ingredients: LiveData<List<Ingredient>>
         val newIngredientInput: LiveData<String>
+        val isNewIngredientInputValid: LiveData<Boolean>
 
         val directions: LiveData<List<Direction>>
-        val newDirectionsInput: LiveData<Direction?>
+        val newDirectionTitle: LiveData<String>
+        val newDirectionDescription: LiveData<String>
+        val newDirectionAttachedImage: LiveData<Uri?>
 
         val isCreateRecipeLoading: LiveData<Boolean>
     }
 
     interface ViewActions {
+        fun newIngredientInputChanged(input: String)
         fun addIngredientClicked()
-        fun addDirectionPhotoClicked()
-        fun addDirectionPhotoAttachSuccess(uri: Uri)
-        fun addDirectionPhotoAttachFailure(error: ErrorKt)
-        fun addDirectionRemovePhotoClicked()
+
+        fun newDirectionTitleInputChanged(title: String)
+        fun newDirectionDescriptionInputChanged(description: String)
+        fun newDirectionPhotoClicked()
+        fun newDirectionPhotoAttachSuccess(uri: Uri)
+        fun newDirectionPhotoAttachFailure(error: ErrorKt)
+        fun newDirectionRemovePhotoClicked()
         fun addDirectionClicked()
+
         fun backClicked()
         fun backConfirmed()
         fun createRecipeClicked()
@@ -44,6 +55,8 @@ interface CreateRecipeContract {
 
     sealed class ViewInstruction {
         object OpenPhotoPicker : ViewInstruction()
+        object OpenCamera : ViewInstruction()
+        object OpenGallery : ViewInstruction()
         object ShowBackConfirmation : ViewInstruction()
         object NavigateBack : ViewInstruction()
     }

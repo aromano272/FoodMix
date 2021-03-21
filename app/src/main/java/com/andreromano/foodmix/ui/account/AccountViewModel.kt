@@ -22,9 +22,9 @@ class AccountViewModel(
     private val userProfileResult = userProfileRepository.get().shareHere(this)
     private val userProfileData = userProfileResult.mapNotNull { it.data }.shareHere(this)
 
-    override val backgroundUrl: LiveData<String> = userProfileData.mapLatest { it.backgroundUrl }.asLiveData()
+    override val backgroundUrl: LiveData<String?> = userProfileData.mapLatest { it.backgroundUrl }.asLiveData()
 
-    override val avatarUrl: LiveData<String> = userProfileData.mapLatest { it.avatarUrl }.asLiveData()
+    override val avatarUrl: LiveData<String?> = userProfileData.mapLatest { it.avatarUrl }.asLiveData()
 
     override val username: LiveData<String> = userProfileData.mapLatest { it.username }.asLiveData()
 

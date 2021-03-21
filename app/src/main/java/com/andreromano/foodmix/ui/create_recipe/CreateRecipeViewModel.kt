@@ -12,17 +12,24 @@ import com.andreromano.foodmix.core.Resource
 import com.andreromano.foodmix.data.Repository
 import com.andreromano.foodmix.domain.model.CreateRecipeRequest
 import com.andreromano.foodmix.domain.model.Direction
+import com.andreromano.foodmix.domain.model.Ingredient
+import com.andreromano.foodmix.extensions.filterResourceFailure
+import com.andreromano.foodmix.extensions.launch
+import com.andreromano.foodmix.extensions.shareHere
+import com.andreromano.foodmix.extensions.withLatestFrom
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 class CreateRecipeViewModel(
-    private val repository: Repository
+    private val repository: Repository,
 ) : ViewModel(), CreateRecipeContract.ViewModel {
 
     private val _navigation = MutableSharedFlow<CreateRecipeContract.ViewInstruction>()
     override val navigation: LiveData<Event<CreateRecipeContract.ViewInstruction>> = _navigation.mapLatest { Event(it) }.asLiveData()
 
-    private val _error = MutableSharedFlow<ErrorKt>()
-    override val error: LiveData<Event<ErrorKt>> = _error.mapLatest { Event(it) }.asLiveData()
+    private val availableIngredientsResult = repository.getIngredients().shareHere(this)
+    private val availableIngredientsData = availableIngredientsResult.mapNotNull { it.data }
+    override val availableIngredientsToPickFrom: LiveData<List<Ingredient>> = availableIngredientsData.asLiveData()
 
     private val _nameInput = MutableStateFlow("")
     override val nameInput: LiveData<String> = _nameInput.asLiveData()
@@ -39,44 +46,78 @@ class CreateRecipeViewModel(
     private val _calories = MutableStateFlow<Int>(200)
     override val calories: LiveData<Int> = _calories.asLiveData()
 
-    private val _ingredients = MutableStateFlow<List<String>>(emptyList())
-    override val ingredients: LiveData<List<String>> = _ingredients.asLiveData()
+    private val _ingredients = MutableStateFlow<List<Ingredient>>(emptyList())
+    override val ingredients: LiveData<List<Ingredient>> = _ingredients.asLiveData()
 
     private val _newIngredientInput = MutableStateFlow<String>("")
     override val newIngredientInput: LiveData<String> = _newIngredientInput.asLiveData()
 
+    private val newIngredientInputIngredient = _newIngredientInput.withLatestFrom(availableIngredientsData) { input, availableIngredients ->
+        availableIngredients.find { it.name.equals(input, ignoreCase = true) }
+    }.flowOn(Dispatchers.IO).shareHere(this)
+
+    override val isNewIngredientInputValid: LiveData<Boolean> = newIngredientInputIngredient.mapLatest { it != null }.asLiveData()
+
     private val _directions = MutableStateFlow<List<Direction>>(emptyList())
     override val directions: LiveData<List<Direction>> = _directions.asLiveData()
 
-    private val _newDirectionsInput = MutableStateFlow<Direction?>(null)
-    override val newDirectionsInput: LiveData<Direction?> = _newDirectionsInput.asLiveData()
+    private val _newDirectionTitle = MutableStateFlow<String>("")
+    override val newDirectionTitle: LiveData<String> = _newDirectionTitle.asLiveData()
+
+    private val _newDirectionDescription = MutableStateFlow<String>("")
+    override val newDirectionDescription: LiveData<String> = _newDirectionDescription.asLiveData()
+
+    private val _newDirectionAttachedImage = MutableStateFlow<Uri?>(null)
+    override val newDirectionAttachedImage: LiveData<Uri?> = _newDirectionAttachedImage.asLiveData()
 
     private val createRecipeAction = MutableSharedFlow<CreateRecipeRequest>()
     private val createRecipeResult = createRecipeAction.transformLatest {
         emit(Resource.Loading(null))
-        emit(repository.createRecipe(it))
+        emit(repository.createRecipe(it).toResource())
     }
 
-    override val isCreateRecipeLoading: LiveData<Boolean> = TODO()
+    override val isCreateRecipeLoading: LiveData<Boolean> = createRecipeResult.mapLatest { it is Resource.Loading }.asLiveData()
 
+    private val _error = MutableSharedFlow<ErrorKt>()
+    override val error: LiveData<Event<ErrorKt>> =
+        merge(
+            _error,
+            availableIngredientsResult.filterResourceFailure().map { it.error },
+            createRecipeResult.filterResourceFailure().map { it.error }
+        ).mapLatest { Event(it) }
+            .asLiveData()
+
+    override fun newIngredientInputChanged(input: String) {
+        _newIngredientInput.value = input
+    }
 
     override fun addIngredientClicked() {
+        val ingredient = newIngredientInputIngredient.replayCache.firstOrNull() ?: return
+        _ingredients.value += ingredient
+        _newIngredientInput.value = ""
+    }
+
+    override fun newDirectionTitleInputChanged(title: String) {
+        _newDirectionTitle.value = title
+    }
+
+    override fun newDirectionDescriptionInputChanged(description: String) {
+        _newDirectionDescription.value = description
+    }
+
+    override fun newDirectionPhotoClicked() = launch {
+        _navigation.emit(CreateRecipeContract.ViewInstruction.OpenPhotoPicker)
+    }
+
+    override fun newDirectionPhotoAttachSuccess(uri: Uri) {
         TODO("Not yet implemented")
     }
 
-    override fun addDirectionPhotoClicked() {
+    override fun newDirectionPhotoAttachFailure(error: ErrorKt) {
         TODO("Not yet implemented")
     }
 
-    override fun addDirectionPhotoAttachSuccess(uri: Uri) {
-        TODO("Not yet implemented")
-    }
-
-    override fun addDirectionPhotoAttachFailure(error: ErrorKt) {
-        TODO("Not yet implemented")
-    }
-
-    override fun addDirectionRemovePhotoClicked() {
+    override fun newDirectionRemovePhotoClicked() {
         TODO("Not yet implemented")
     }
 
@@ -98,7 +139,7 @@ class CreateRecipeViewModel(
 
     @Suppress("UNCHECKED_CAST")
     class Factory(
-        private val repository: Repository
+        private val repository: Repository,
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return CreateRecipeViewModel(
@@ -106,5 +147,4 @@ class CreateRecipeViewModel(
             ) as T
         }
     }
-
 }

@@ -55,17 +55,19 @@ class Repository(
         }.asFlow()
 
     fun getIngredients(searchQuery: String? = null, ingredientTypeFilter: IngredientType? = null): Flow<Resource<List<Ingredient>>> =
-        object : NetworkBoundResource<List<IngredientQuery>, List<IngredientResult>, List<Ingredient>>() {
+        object : NetworkBoundResource<List<IngredientQuery>, List<IngredientResult>, List<Ingredient>>(FetchStrategy.IF_LOCAL_IS_NULL) {
             override suspend fun saveCallResult(result: List<IngredientResult>) {
-                ingredientTypesDao.insertOrIgnore(result.map { it.type }.distinct().map { IngredientTypeEntity(it, it) })
-                ingredientsDao.replaceAll(result.map { it.toEntity() })
+                transactionRunner.run {
+                    ingredientTypesDao.insertOrIgnore(result.map { it.type }.distinct().map { IngredientTypeEntity(it, it) })
+                    ingredientsDao.replaceAll(result.map { it.toEntity() })
+                }
             }
 
             override suspend fun loadFromDb(): Flow<List<IngredientQuery>> = ingredientsDao.getAll(searchQuery.orEmpty(), ingredientTypeFilter?.id)
 
             override suspend fun mapToDomain(entity: List<IngredientQuery>): List<Ingredient> = entity.map { it.toDomain() }
 
-            override suspend fun createCall(): ResultKt<List<IngredientResult>> = api.getIngredients(searchQuery)
+            override suspend fun createCall(): ResultKt<List<IngredientResult>> = api.getIngredients()
         }.asFlow()
 
     suspend fun getRecipes(category: Category): ResultKt<List<Recipe>> = api.getRecipesByCategory(category.id).mapData { it.map { it.toDomain() } }

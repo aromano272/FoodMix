@@ -28,7 +28,17 @@ abstract class IngredientModel : EpoxyModelWithHolder<IngredientModel.Holder>() 
 
 
     override fun bind(holder: Holder) = with(holder) {
-        iv_image.load(ingredient.imageUrl)
+        iv_image.load(ingredient.imageUrl) {
+            listener(
+                onSuccess = { _, _ ->
+                    tv_image_fallback.toVisibility = false
+                },
+                onError = { _, _ ->
+                    tv_image_fallback.toVisibility = true
+                    tv_image_fallback.text = ingredient.name.take(3)
+                }
+            )
+        }
         tv_name.text = ingredient.name
 
         iv_checked.toVisibility = isSelected
@@ -38,6 +48,7 @@ abstract class IngredientModel : EpoxyModelWithHolder<IngredientModel.Holder>() 
 
     class Holder : KotlinEpoxyHolder() {
         val iv_image by bind<ImageView>(R.id.iv_image)
+        val tv_image_fallback by bind<TextView>(R.id.tv_image_fallback)
         val tv_name by bind<TextView>(R.id.tv_name)
         val iv_checked by bind<ImageView>(R.id.iv_checked)
     }
