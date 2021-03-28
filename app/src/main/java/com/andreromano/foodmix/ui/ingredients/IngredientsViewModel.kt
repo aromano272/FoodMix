@@ -30,11 +30,11 @@ class IngredientsViewModel(
     override val ingredientTypes: LiveData<List<IngredientType>> = ingredientTypesResult.mapNotNull { it.data }.asLiveData()
 
     private val ingredientsResult: SharedFlow<Resource<List<Ingredient>>> =
-        _searchQueryInput
-            .debounce(300)
-            .combine(_selectedIngredientType) { query, type -> query to type }
+        combine(
+            _searchQueryInput.debounce(300),
+            _selectedIngredientType,
+        ) { query, type -> query to type }
             .flatMapLatest { (query, type) ->
-                Timber.e("miesmo flatMapLatest")
                 repository.getIngredients(query, type)
             }
             .shareHere(this)
